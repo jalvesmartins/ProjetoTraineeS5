@@ -53,6 +53,11 @@ class ServiceUser {
         })
         return deletedUser;
     }
+        
+    //Lista as músicas já escutadas por determinado usuário
+    async musicsListenByUser(userId: number){
+
+    }
 }
 
 export default new ServiceUser();
