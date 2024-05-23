@@ -1,18 +1,32 @@
 import UserService from "./src/domains/user/services/UserService";
 
-async function main() {
+async function mainCreate() {
     const usuario2 = {
         id: 0,
-        name: 'Bernardo Viggiano',
-        email: 'bv@gmail.com',
+        name: 'Henrique do Vale',
+        email: 'vicepresida@gmail.com',
         photo: null,
-        password: '123456',
-        role: 'Conta Básica'
+        password: 'GoleiroZe',
+        role: 'Conta Comum'
     }
 
-    const user = await UserService.create(usuario2);
-
-    console.log(user);
+    const CreateUser = await UserService.create(usuario2);
+    console.log(CreateUser);
 }
 
-main();
+async function mainRead() {
+    const ReadUser = await UserService.read();
+    console.log(ReadUser);
+}
+
+async function mainUpdate(){
+    const UpdateUser = await UserService.update();
+    console.log(UpdateUser);
+}
+
+async function mainDelete(){
+    const DeleteUser = await UserService.delete();
+    console.log(DeleteUser)
+}
+
+mainRead();
