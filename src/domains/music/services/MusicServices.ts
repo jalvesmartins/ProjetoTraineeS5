@@ -3,5 +3,6 @@ import prisma from '../../../../config/prismaClient'
 
 class MusicService {
 
-    
 }
+
+export default MusicService;
