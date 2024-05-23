@@ -34,6 +34,12 @@ class ArtistService {
         return artist;
     }
 
+    async delete(id:number){
+        const artist = await prisma.artist.delete({
+            where: {id:id}
+        });
+        return artist;
+    }
 } 
 
 export default ArtistService;
