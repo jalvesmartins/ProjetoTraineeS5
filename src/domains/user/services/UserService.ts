@@ -53,6 +53,11 @@ class ServiceUser {
         })
         return deletedUser;
     }
+
+    //Adiciona música a um usuário
+    async addMusicToUser(userId: number, musicId: number){
+    
+    }
         
     //Lista as músicas já escutadas por determinado usuário
     async musicsListenByUser(userId: number){
