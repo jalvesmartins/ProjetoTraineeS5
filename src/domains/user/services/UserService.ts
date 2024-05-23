@@ -2,52 +2,57 @@ import { User } from '.prisma/client';
 import prisma from '../../../../config/prismaClient'
 
 class ServiceUser {
-    async create(body: User){
+    //Cria um usuário
+    async create(body: User) {
         const createUser = await prisma.user.create({
             data: {
-                name:   body.name,
-                email:  body.email,
-                photo:  body.photo,
+                name: body.name,
+                email: body.email,
+                photo: body.photo,
                 password: body.password,
-                role:     body.role
+                role: body.role
             }
         });
 
         return createUser;
     }
 
-    async readAll(){
+    //Retorna todos os usuários
+    async readAll() {
         const readUser = await prisma.user.findMany();
         return readUser;
     }
 
-    async readById(id: number){
+    //Retorna um usuário pelo ID
+    async readById(id: number) {
         const readUserId = await prisma.user.findUnique({
-            where: {id:id}
+            where: { id: id }
         });
         return readUserId;
     }
 
+    //Atualiza um usuário pelo ID
     async update(id: number, body: Partial<User>) {
-        const UpdateUser = await prisma.user.update({
+        const updateUser = await prisma.user.update({
             data: body,
-            where:{id:id},
+            where: { id: id },
         })
-        const UpdatedUser = await prisma.user.findUnique({
-            where:{id:id}
+        const updatedUser = await prisma.user.findUnique({
+            where: { id: id }
         })
-        return UpdatedUser;
+        return updatedUser;
     }
 
-    async delete(id:number) {
-        const DeletedUser = await prisma.user.findUnique({
-            where:{id:id}
+    //Deleta um usuário pelo ID
+    async delete(id: number) {
+        const deletedUser = await prisma.user.findUnique({
+            where: { id: id }
         })
-        const UserDelete = await prisma.user.delete({
-            where:{id:id}
+        const userDelete = await prisma.user.delete({
+            where: { id: id }
         })
-        return DeletedUser;
-    }   
+        return deletedUser;
+    }
 }
 
 export default new ServiceUser();

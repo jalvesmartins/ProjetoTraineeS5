@@ -2,7 +2,8 @@ import { Music } from '.prisma/client';
 import prisma from '../../../../config/prismaClient'
 
 class MusicService {
-    async create(body: Music){
+    //Cria uma nova música
+    async create(body: Music) {
         const music = await prisma.music.create({
             data: {
                 id: body.id,
@@ -15,32 +16,36 @@ class MusicService {
         return music;
     }
 
-    async readAll(){
+    //Retorna todas as músicas
+    async readAll() {
         const musics = await prisma.music.findMany();
         return musics;
     }
 
-    async readById(id: number){
+    //Retorna uma música pelo ID
+    async readById(id: number) {
         const music = await prisma.music.findUnique({
-            where: {id:id}
+            where: { id: id }
         });
-        return music
+        return music;
     }
 
-    async update(id: number, body: Partial<Music>){
+    //Atualiza uma música pelo ID
+    async update(id: number, body: Partial<Music>) {
         const music = await prisma.music.update({
-            where: {id:id},
+            where: { id: id },
             data: body
         });
         return music;
     }
 
-    async delete(id:number){
+    //Deleta uma música pelo ID
+    async delete(id: number) {
         const music = await prisma.music.delete({
-            where: {id:id}
+            where: { id: id }
         });
         return music;
-    } 
+    }
 }
 
 export default MusicService;
