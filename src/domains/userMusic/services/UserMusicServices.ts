@@ -1,5 +1,5 @@
-import { UserMusic } from "@prisma/client";
-import { Prisma } from "@prisma/client";
+import  { UserMusic }  from ".prisma/client";
+import prisma from '../../../../config/prismaClient'
 
 class UserMusicService {
     //Adiciona música a um usuário
@@ -19,7 +19,15 @@ class UserMusicService {
 
     //Verifica se um usuário já escutou determinada música
     async hasUserHeardMusic(userId: number, musicId: number): Promise<boolean> {
-        return ;
+        const usersMusic = await prisma.userMusic.findUnique({
+                where: {
+                    userId_musicId: {
+                        userId: userId,
+                        musicId: musicId
+                    }
+                }
+         });
+        return usersMusic !== null;
     }
 }
 
