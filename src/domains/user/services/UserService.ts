@@ -59,6 +59,11 @@ class ServiceUser {
     
     }
         
+    //Remove uma música de um usuário 
+    async removeMusicFromUser(userId: number, musicId: number){
+
+    }
+
     //Lista as músicas já escutadas por determinado usuário
     async musicsListenByUser(userId: number){
 

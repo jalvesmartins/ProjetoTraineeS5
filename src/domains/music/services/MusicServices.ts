@@ -47,11 +47,6 @@ class MusicService {
         return music;
     }
 
-    //Remove uma música de um usuário 
-    async removeMusicFromUser(userId: number, musicId: number){
-
-    }
-
     //Lista quais usuários já escutaram determinada música
     async userWhoListenedMusic(musicId: number){
 
