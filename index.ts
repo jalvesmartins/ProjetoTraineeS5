@@ -1,3 +1,4 @@
+import { userInfo } from "os";
 import UserService from "./src/domains/user/services/UserService";
 
 async function mainCreate() {
@@ -19,5 +20,10 @@ async function mainRead() {
     console.log(ReadUser);
 }
 
+async function mainUpdate(){
+    const UpdateUser = await UserService.update();
+    console.log(UpdateUser);
+}
 
-mainRead();
+
+mainUpdate();

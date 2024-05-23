@@ -19,6 +19,23 @@ class ServiceUser {
         const ReadUser = await prisma.user.findMany();
         return ReadUser;
     }
+    async update() {
+        const UpdateUser = await prisma.user.update({
+            data:{
+                name: 'Fernanda',
+                role: 'Conta Premium'
+            },
+            where:{
+                id: 2
+            },
+        })
+        const UpdatedUser = await prisma.user.findUnique({
+            where:{
+                id:2
+            }
+        })
+        return UpdatedUser;
+    }
 }
 
 export default new ServiceUser();
