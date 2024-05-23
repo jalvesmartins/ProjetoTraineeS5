@@ -3,11 +3,11 @@ import UserService from "./src/domains/user/services/UserService";
 async function main() {
     const usuario2 = {
         id: 0,
-        name: 'Jh',
-        email: 'jh@gmail.com',
+        name: 'Bernardo Viggiano',
+        email: 'bv@gmail.com',
         photo: null,
-        password: 'Senha',
-        role: 'Conta Premium'
+        password: '123456',
+        role: 'Conta Básica'
     }
 
     const user = await UserService.create(usuario2);

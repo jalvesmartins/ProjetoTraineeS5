@@ -9,7 +9,7 @@ class ServiceUser {
                 email:  body.email,
                 photo:  body.photo,
                 password: body.password,
-                role:     body.password
+                role:     body.role
             }
         });
 
