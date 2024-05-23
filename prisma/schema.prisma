@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = "file:./dev.db"  
 }
 
 model User {
@@ -17,4 +17,21 @@ model User {
   photo     String?
   password  String
   role      String
+}
+
+model Artist {
+  id        Int @id @default(autoincrement())
+  name      String
+  photo     String?
+  stream    Int 
+  musics    Music[]
+}
+
+model Music {
+  id        Int @id @default(autoincrement())
+  name      String
+  genre     String
+  album     String
+  author    Artist @relation(fields: [authorId], references: [id])
+  authorId  Int   
 }

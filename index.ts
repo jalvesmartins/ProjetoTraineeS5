@@ -1,4 +1,3 @@
-import { userInfo } from "os";
 import UserService from "./src/domains/user/services/UserService";
 
 async function mainCreate() {
