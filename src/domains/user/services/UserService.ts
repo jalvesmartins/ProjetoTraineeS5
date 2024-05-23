@@ -22,20 +22,34 @@ class ServiceUser {
     async update() {
         const UpdateUser = await prisma.user.update({
             data:{
-                name: 'Fernanda',
-                role: 'Conta Premium'
+                name: 'João Pedro',
+                email: 'jp@hotmail.com',
+                role: 'Conta Comum'
             },
             where:{
-                id: 2
+                id: 4
             },
         })
         const UpdatedUser = await prisma.user.findUnique({
             where:{
-                id:2
+                id:1
             }
         })
         return UpdatedUser;
     }
+    async delete() {
+        const DeletedUser = await prisma.user.findUnique({
+            where:{
+                id:4
+            }
+        })
+        const UserDelete = await prisma.user.delete({
+            where:{
+                id:4
+            }
+        })
+        return DeletedUser;
+    }   
 }
 
 export default new ServiceUser();

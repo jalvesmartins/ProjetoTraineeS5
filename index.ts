@@ -3,11 +3,11 @@ import UserService from "./src/domains/user/services/UserService";
 
 async function mainCreate() {
     const usuario2 = {
-        id: 1,
-        name: 'Nando',
-        email: 'nando@gmail.com',
+        id: 0,
+        name: 'Henrique do Vale',
+        email: 'vicepresida@gmail.com',
         photo: null,
-        password: 'Senha123',
+        password: 'GoleiroZe',
         role: 'Conta Comum'
     }
 
@@ -25,5 +25,9 @@ async function mainUpdate(){
     console.log(UpdateUser);
 }
 
+async function mainDelete(){
+    const DeleteUser = await UserService.delete();
+    console.log(DeleteUser)
+}
 
-mainUpdate();
+mainRead();
