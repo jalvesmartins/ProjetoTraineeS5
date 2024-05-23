@@ -3,7 +3,7 @@ import prisma from '../../../../config/prismaClient'
 
 class ServiceUser {
     async create(body: User){
-        const CreateUser = await prisma.user.create({
+        const createUser = await prisma.user.create({
             data: {
                 name:   body.name,
                 email:  body.email,
@@ -13,40 +13,38 @@ class ServiceUser {
             }
         });
 
-        return CreateUser;
+        return createUser;
     }
-    async read(){
-        const ReadUser = await prisma.user.findMany();
-        return ReadUser;
+
+    async readAll(){
+        const readUser = await prisma.user.findMany();
+        return readUser;
     }
-    async update() {
+
+    async readById(id: number){
+        const readUserId = await prisma.user.findUnique({
+            where: {id:id}
+        });
+        return readUserId;
+    }
+
+    async update(id: number, body: Partial<User>) {
         const UpdateUser = await prisma.user.update({
-            data:{
-                name: 'João Pedro',
-                email: 'jp@hotmail.com',
-                role: 'Conta Comum'
-            },
-            where:{
-                id: 4
-            },
+            data: body,
+            where:{id:id},
         })
         const UpdatedUser = await prisma.user.findUnique({
-            where:{
-                id:1
-            }
+            where:{id:id}
         })
         return UpdatedUser;
     }
-    async delete() {
+
+    async delete(id:number) {
         const DeletedUser = await prisma.user.findUnique({
-            where:{
-                id:4
-            }
+            where:{id:id}
         })
         const UserDelete = await prisma.user.delete({
-            where:{
-                id:4
-            }
+            where:{id:id}
         })
         return DeletedUser;
     }   
