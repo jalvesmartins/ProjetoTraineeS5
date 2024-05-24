@@ -33,7 +33,11 @@ class ArtistService {
     async update(id: number, body: Partial<Artist>) {
         const artist = await prisma.artist.update({
             where: { id: id },
-            data: body
+            data: {
+                ...(body.name && { name: body.name }),
+                ...(body.photo && { photo: body.photo }),
+                ...(body.stream && { stream: body.stream })
+            }
         });
         return artist;
     }
