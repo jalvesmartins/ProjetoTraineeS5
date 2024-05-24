@@ -31,16 +31,23 @@ class ArtistService {
 
     //Atualiza um artista pelo ID
     async update(id: number, body: Partial<Artist>) {
-        const artist = await prisma.artist.update({
+        const updateData = {
+            ...(body.name && { name: body.name }),
+            ...(body.photo && { photo: body.photo }),
+            ...(body.stream && { stream: body.stream })
+        };
+    
+        const updatedMusic = await prisma.artist.update({
             where: { id: id },
-            data: {
-                ...(body.name && { name: body.name }),
-                ...(body.photo && { photo: body.photo }),
-                ...(body.stream && { stream: body.stream })
-            }
+            data: updateData
         });
+    
+        const artist = await prisma.artist.findUnique({
+            where: { id: id }
+        });
+    
         return artist;
-    }
+    }    
 
     //Deleta um artista pelo ID
     async delete(id: number) {
