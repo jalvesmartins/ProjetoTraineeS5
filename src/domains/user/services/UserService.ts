@@ -33,22 +33,24 @@ class ServiceUser {
 
     //Atualiza um usuário pelo ID
     async update(id: number, body: Partial<User>) {
-        const updateUser = await prisma.user.update({
-            where: { id: id },
-            data: {
+        const updateData = {
                 ...(body.name && { name: body.name }),
                 ...(body.email && { email: body.email }),
                 ...(body.photo && { photo: body.photo }),
                 ...(body.password && { password: body.password }),
                 ...(body.role && { role: body.role }),
-            },
+            };
+
+        const updatedUser = await prisma.user.update({
+            where: { id: id },
+            data: updateData
         });
 
-        const updatedUser = await prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
             where: { id: id },
         });
 
-        return updatedUser;
+        return user;
     }
 
     //Deleta um usuário pelo ID
