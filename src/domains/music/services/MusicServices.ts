@@ -34,7 +34,12 @@ class MusicService {
     async update(id: number, body: Partial<Music>) {
         const music = await prisma.music.update({
             where: { id: id },
-            data: body
+            data: {
+                ...(body.name && { name: body.name }),
+                ...(body.genre && { genre: body.genre }),
+                ...(body.album && { album: body.album }),
+                ...(body.authorId && { authorId: body.authorId }),
+            },
         });
         return music;
     }
