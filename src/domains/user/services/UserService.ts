@@ -55,13 +55,31 @@ class ServiceUser {
     }
 
     //Adiciona música a um usuário
-    async addMusicToUser(userId: number, musicId: number){
-    
+    async addMusicToUser(userId: number, musicId: number) {
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                musics: {
+                    connect: { id: musicId },
+                },
+            },
+            include: { musics: true },
+        });
+        return updatedUser;
     }
         
     //Remove uma música de um usuário 
-    async removeMusicFromUser(userId: number, musicId: number){
-
+    async removeMusicFromUser(userId: number, musicId: number) {
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                musics: {
+                    disconnect: { id: musicId },
+                },
+            },
+            include: { musics: true },
+        });
+        return updatedUser;
     }
 
     //Lista as músicas já escutadas por determinado usuário

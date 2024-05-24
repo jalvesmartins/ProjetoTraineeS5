@@ -17,7 +17,7 @@ model User {
   photo     String?
   password  String
   role      String
-  user      Music[]
+  musics     Music[]
 }
 
 model Artist {
@@ -35,5 +35,5 @@ model Music {
   album     String
   author    Artist  @relation(fields: [authorId], references: [id])
   authorId  Int   
-  music     User[] 
+  users     User[] 
   } 
