@@ -32,15 +32,22 @@ class MusicService {
 
     //Atualiza uma música pelo ID
     async update(id: number, body: Partial<Music>) {
-        const music = await prisma.music.update({
+        const updateData = {
+            ...(body.name && { name: body.name }),
+            ...(body.genre && { genre: body.genre }),
+            ...(body.album && { album: body.album }),
+            ...(body.authorId && { authorId: body.authorId })
+        };
+
+        const updatedMusic = await prisma.music.update({
             where: { id: id },
-            data: {
-                ...(body.name && { name: body.name }),
-                ...(body.genre && { genre: body.genre }),
-                ...(body.album && { album: body.album }),
-                ...(body.authorId && { authorId: body.authorId }),
-            },
+            data: updateData
         });
+
+        const music = await prisma.music.findUnique({
+            where: { id: id }
+        });
+
         return music;
     }
 
