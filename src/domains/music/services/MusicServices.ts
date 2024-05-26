@@ -61,7 +61,11 @@ class MusicService {
 
     //Lista quais usuários já escutaram determinada música
     async userWhoListenedMusic(musicId: number){
-
+        const usersByMusic = await prisma.music.findUnique({
+            where:{ id: musicId },
+            select:{ users: true }
+        })
+        return usersByMusic;
     }
 }
 
