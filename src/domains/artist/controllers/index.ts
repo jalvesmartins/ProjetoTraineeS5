@@ -34,4 +34,13 @@ router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
     }
 });
 
+router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const artist = await artistService.delete(Number(req.params.id));
+        res.json(artist);
+    } catch (error) {
+        next(error);
+    }
+});
+
 export default router; 
