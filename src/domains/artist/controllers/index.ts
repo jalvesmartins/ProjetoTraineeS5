@@ -8,7 +8,7 @@ const artistService = new ArtistService();
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artist = await artistService.create(req.body);
-        res.status(201).json(artist);
+        res.json(artist);
     } catch (error) {
         next(error);
     }
@@ -18,7 +18,17 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artists = await artistService.readAll();
-        res.status(200).json(artists);
+        res.json(artists);
+    } catch (error) {
+        next(error);
+    }
+
+});
+
+router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const artist = await artistService.update(Number(req.params.id), req.body);
+        res.json(artist);
     } catch (error) {
         next(error);
     }
