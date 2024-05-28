@@ -1,6 +1,7 @@
 import cors, { CorsOptions } from "cors";
 import dotenv from "dotenv";
 import express, { Express } from "express";
+import ArtistRouter from "../src/domains/artist/controllers";
 
 dotenv.config();
 
@@ -17,4 +18,6 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-//colocar rota de User
+//implementar rotas
+
+app.use("api/artist", ArtistRouter);
