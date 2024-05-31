@@ -25,6 +25,17 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 
 });
 
+//Rota para retornar um artista por ID
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const artist = await artistService.readById(Number(req.params.id));
+        res.json(artist);
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Rota para atualizar um artista por ID
 router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artist = await artistService.update(Number(req.params.id), req.body);
@@ -34,6 +45,7 @@ router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
     }
 });
 
+// Rota para deletar um artista por ID
 router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artist = await artistService.delete(Number(req.params.id));
