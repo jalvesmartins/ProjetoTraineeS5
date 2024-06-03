@@ -46,7 +46,7 @@ router.put("/update/:id", async (req: Request, res: Response, next: NextFunction
     }
 });
 
-// Deleta uma música pelo ID
+// Deleta uma música pelo ID 
 router.delete("/delete/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const deleteMusic = await musicService.delete(Number(req.params.id));
