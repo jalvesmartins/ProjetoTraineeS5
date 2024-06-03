@@ -59,7 +59,8 @@ router.delete("/delete/:id", async (req: Request, res: Response, next: NextFunct
 // Lista os usuários que já ouviram determinada música
 router.get("/:id/users", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const usersByMusic = await musicService.userWhoListenedMusic(Number(req.params.id));
+        const musicId = Number(req.params.id);
+        const usersByMusic = await musicService.userWhoListenedMusic(musicId);
         res.json(usersByMusic);
     } catch (error) {
         next(error);
