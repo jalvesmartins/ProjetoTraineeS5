@@ -63,6 +63,12 @@ class ServiceUser {
 
 	//Atualiza um usuário pelo ID
 	async update(id: number, body: Partial<User>) {
+		const checkUser = await prisma.user.findUnique({
+			where: {
+				email: body.email
+			}
+		});
+
 		const updateData = {
 			...(body.name && { name: body.name }),
 			...(body.email && { email: body.email }),
@@ -70,12 +76,20 @@ class ServiceUser {
 			...(body.password && { password: body.password }),
 			...(body.role && { role: body.role }),
 		};
-
+		//Autenticações das excessões
+		if(body.email == null){
+			throw new InvalidParamError("Email não informado.");
+		}
+		if(checkUser){
+			throw new QueryError("Esse email já esta cadastrado.");
+		}
+		if(body.password != undefined || body.password.length<6){
+			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
+		}
 		const updatedUser = await prisma.user.update({
 			where: { id: id },
 			data: updateData
 		});
-
 		const user = await prisma.user.findUnique({
 			where: { id: id },
 		});
@@ -87,10 +101,13 @@ class ServiceUser {
 	async delete(id: number) {
 		const deletedUser = await prisma.user.findUnique({
 			where: { id: id }
-		})
+		});
+		if(!deletedUser){
+			throw new QueryError("Usuário inválido e/ou inexistente");
+		}
 		const userDelete = await prisma.user.delete({
 			where: { id: id }
-		})
+		});
 		return deletedUser;
 	}
 
