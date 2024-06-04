@@ -46,13 +46,15 @@ class ServiceUser {
 
 	//Retorna um usuário pelo ID
 	async readById(id: number) {
+		if(!id){
+			throw new QueryError("Informe um Id de usuário");
+		}
 		const checkId = await prisma.user.findUnique({
 			where: {
 				id: id
 			}
 		});
-
-		if(id == null || !checkId){
+		if(!checkId){
 			throw new QueryError("Id de usuário inexistente e/ou inválido");
 		}
 		const readUserId = await prisma.user.findUnique({
@@ -99,6 +101,9 @@ class ServiceUser {
 
 	//Deleta um usuário pelo ID
 	async delete(id: number) {
+		if(!id){
+			throw new QueryError("Informe um Id de usuário");
+		}
 		const deletedUser = await prisma.user.findUnique({
 			where: { id: id }
 		});
