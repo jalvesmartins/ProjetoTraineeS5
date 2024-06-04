@@ -92,5 +92,4 @@ router.delete("/musics/delete/:id", async (req: Request, res: Response, next:Nex
 	}
 });
 
-
 export default router; 

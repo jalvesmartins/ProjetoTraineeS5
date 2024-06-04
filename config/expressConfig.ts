@@ -4,6 +4,7 @@ import express, { Express } from 'express';
 import ArtistRouter from '../src/domains/artist/controllers';
 import UserRouter from "../src/domains/user/controllers/index";
 import MusicRouter from '../src/domains/music/controllers';
+import cookieParser = require('cookie-parser');
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const options: CorsOptions = {
 };
 
 app.use(cors(options));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
