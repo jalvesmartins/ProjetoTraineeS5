@@ -30,7 +30,7 @@ class ArtistService {
     //Retorna um artista pelo ID
     async readById(id: number) {
         if(!id){
-            throw new InvalidParamError("É necessário informar um ID")
+            throw new InvalidParamError("É necessário informar um ID");
         }
 
         const artist = await prisma.artist.findUnique({
@@ -38,24 +38,32 @@ class ArtistService {
         });
 
         if(!artist){
-            throw new QueryError("Artista não encontrado")
+            throw new QueryError("Artista não encontrado");
         }
-        
+
         return artist;
     }
 
     //Atualiza um artista pelo ID
     async update(id: number, body: Partial<Artist>) {
+        if(!id){
+            throw new InvalidParamError("É necessário informar um ID");
+        }
+
         const updateData = {
             ...(body.name && { name: body.name }),
             ...(body.photo && { photo: body.photo }),
             ...(body.stream && { stream: body.stream })
         };
     
-        const updatedMusic = await prisma.artist.update({
+        const updatedArtist = await prisma.artist.update({
             where: { id: id },
             data: updateData
         });
+
+        if (!updatedArtist) {
+            throw new QueryError('Artista não enconstrado');
+        }
     
         const artist = await prisma.artist.findUnique({
             where: { id: id }
