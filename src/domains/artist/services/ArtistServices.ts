@@ -17,7 +17,12 @@ class ArtistService {
 
     //Retorna todos os artistas
     async readAll() {
-        const artists = await prisma.artist.findMany();
+
+        const artists = await prisma.artist.findMany({
+            orderBy: {
+                name: 'asc'
+            }
+        });
         return artists;
     }
 
