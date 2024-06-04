@@ -6,6 +6,10 @@ import { InvalidParamError } from '../../../../errors/InvalidParamError';
 class ArtistService {
     //Cria um novo artista
     async create(body: Artist) {
+        if (!body.name || !body.photo) {
+            throw new InvalidParamError('Nome e foto são obrigatórios');
+        }
+
         const artist = await prisma.artist.create({
             data: {
                 id: body.id,
@@ -14,6 +18,10 @@ class ArtistService {
                 stream: body.stream
             }
         })
+
+        if(!artist){
+            throw new QueryError("Erro ao criar artista");
+        }
         return artist;
     }
 
