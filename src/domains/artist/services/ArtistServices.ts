@@ -68,20 +68,20 @@ class ArtistService {
             ...(body.stream && { stream: body.stream })
         };
     
+        const checkArtist = await prisma.artist.findUnique({
+            where: {id: id}
+        });
+
+        if(!checkArtist){
+            throw new QueryError("Artista não encontrado");
+        }
+
         const updatedArtist = await prisma.artist.update({
             where: { id: id },
             data: updateData
         });
-
-        if (!updatedArtist) {
-            throw new QueryError('Artista não enconstrado');
-        }
-    
-        const artist = await prisma.artist.findUnique({
-            where: { id: id }
-        });
-    
-        return artist;
+     
+        return updatedArtist;
     }    
 
     //Deleta um artista pelo ID
@@ -90,13 +90,17 @@ class ArtistService {
             throw new InvalidParamError("É necessário informar um ID");
         }
 
+        const checkArtist = await prisma.artist.findUnique({
+            where: {id: id}
+        });
+
+        if(!checkArtist){
+            throw new QueryError("Artista não encontrado");
+        }
+
         const artist = await prisma.artist.delete({
             where: { id: id }
         });
-
-        if(!artist){
-            throw new QueryError("Artista não encontrado");
-        }
 
         return artist;
     }
