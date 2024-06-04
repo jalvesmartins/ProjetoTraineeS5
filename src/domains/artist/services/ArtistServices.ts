@@ -24,6 +24,10 @@ class ArtistService {
                 name: 'asc'
             }
         });
+
+        if(!artists){
+            throw new QueryError("Nenhum artista encontrado");
+        }
         return artists;
     }
 
@@ -85,7 +89,7 @@ class ArtistService {
         if(!artist){
             throw new QueryError("Artista não encontrado");
         }
-        
+
         return artist;
     }
 } 
