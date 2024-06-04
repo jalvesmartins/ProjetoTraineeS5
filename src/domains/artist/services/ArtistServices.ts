@@ -74,9 +74,18 @@ class ArtistService {
 
     //Deleta um artista pelo ID
     async delete(id: number) {
+        if(!id){
+            throw new InvalidParamError("É necessário informar um ID");
+        }
+
         const artist = await prisma.artist.delete({
             where: { id: id }
         });
+
+        if(!artist){
+            throw new QueryError("Artista não encontrado");
+        }
+        
         return artist;
     }
 } 
