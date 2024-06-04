@@ -11,7 +11,6 @@ class ServiceUser {
 				email: body.email
 			}
 		});
-
 		if(body.email == null){
 			throw new InvalidParamError("Email não informado.");
 		}
@@ -21,7 +20,6 @@ class ServiceUser {
 		if(body.password.length<6){
 			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
 		}
-
 		const createUser = await prisma.user.create({
 			data: {
 				name: body.name,
@@ -31,7 +29,6 @@ class ServiceUser {
 				role: body.role
 			}
 		});
-
 		return createUser;
 	}
 
@@ -65,7 +62,6 @@ class ServiceUser {
 				email: body.email
 			}
 		});
-
 		const updateData = {
 			...(body.name && { name: body.name }),
 			...(body.email && { email: body.email }),
@@ -90,7 +86,6 @@ class ServiceUser {
 		const user = await prisma.user.findUnique({
 			where: { id: id },
 		});
-
 		return user;
 	}
 
@@ -116,7 +111,6 @@ class ServiceUser {
 		if(!userId || !musicId){
 			throw new QueryError("Informe um Id de usuário e/ou Id da música");
 		}
-
 		const checkUser = await prisma.user.findUnique({
 			where: {
 				id: userId
@@ -125,7 +119,6 @@ class ServiceUser {
 		if(!checkUser){
 			throw new QueryError("Usuário inválido e/ou inexistente");
 		}
-
 		const checkMusic = await prisma.user.findUnique({
 			where: {
 				id: musicId
@@ -134,7 +127,6 @@ class ServiceUser {
 		if(!checkMusic){
 			throw new QueryError("Música inválida e/ou inexistente");
 		}
-		
 		const updatedUser = await prisma.user.update({
 			where: { id: userId },
 			data: {
@@ -149,6 +141,25 @@ class ServiceUser {
         
 	//Remove uma música de um usuário 
 	async removeMusicFromUser(userId: number, musicId: number) {
+		if(!userId || !musicId){
+			throw new QueryError("Informe um Id de usuário e/ou Id da música");
+		}
+		const checkUser = await prisma.user.findUnique({
+			where: {
+				id: userId
+			}
+		});
+		if(!checkUser){
+			throw new QueryError("Usuário inválido e/ou inexistente");
+		}
+		const checkMusic = await prisma.user.findUnique({
+			where: {
+				id: musicId
+			}
+		});
+		if(!checkMusic){
+			throw new QueryError("Música inválida e/ou inexistente");
+		}
 		const updatedUser = await prisma.user.update({
 			where: { id: userId },
 			data: {
