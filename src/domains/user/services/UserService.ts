@@ -44,7 +44,7 @@ class ServiceUser {
 	//Retorna um usuário pelo ID
 	async readById(id: number) {
 		if(!id){
-			throw new QueryError("Informe um Id de usuário");
+			throw new InvalidParamError("Informe um Id de usuário");
 		}
 		const readUserId = await prisma.user.findUnique({
 			where: { id: id }
@@ -57,11 +57,9 @@ class ServiceUser {
 
 	//Atualiza um usuário pelo ID
 	async update(id: number, body: Partial<User>) {
-		const checkUser = await prisma.user.findUnique({
-			where: {
-				email: body.email
-			}
-		});
+		if(!id){
+			throw new InvalidParamError("Informe um Id de usuário.");
+		}
 		const updateData = {
 			...(body.name && { name: body.name }),
 			...(body.email && { email: body.email }),
@@ -69,14 +67,19 @@ class ServiceUser {
 			...(body.password && { password: body.password }),
 			...(body.role && { role: body.role }),
 		};
+		const checkUser = await prisma.user.findUnique({
+			where: {
+				email: body.email
+			}
+		});
 		//Autenticações das excessões
-		if(body.email == null){
-			throw new InvalidParamError("Email não informado.");
+		if(!updateData){
+			throw new InvalidParamError("Informe os dados de atualização");
 		}
-		if(checkUser){
-			throw new QueryError("Esse email já esta cadastrado.");
+		if(body.email == null || checkUser){
+			throw new InvalidParamError("Email inválido e/ou já cadastrado.");
 		}
-		if(body.password != undefined || body.password.length<6){
+		if(body.password != undefined && body.password.length<6){
 			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
 		}
 		const updatedUser = await prisma.user.update({
@@ -92,7 +95,7 @@ class ServiceUser {
 	//Deleta um usuário pelo ID
 	async delete(id: number) {
 		if(!id){
-			throw new QueryError("Informe um Id de usuário");
+			throw new InvalidParamError("Informe um Id de usuário");
 		}
 		const deletedUser = await prisma.user.findUnique({
 			where: { id: id }
@@ -109,7 +112,7 @@ class ServiceUser {
 	//Adiciona música a um usuário
 	async addMusicToUser(userId: number, musicId: number) {
 		if(!userId || !musicId){
-			throw new QueryError("Informe um Id de usuário e/ou Id da música");
+			throw new InvalidParamError("Informe um Id de usuário e/ou Id da música");
 		}
 		const checkUser = await prisma.user.findUnique({
 			where: {
@@ -142,7 +145,7 @@ class ServiceUser {
 	//Remove uma música de um usuário 
 	async removeMusicFromUser(userId: number, musicId: number) {
 		if(!userId || !musicId){
-			throw new QueryError("Informe um Id de usuário e/ou Id da música");
+			throw new InvalidParamError("Informe um Id de usuário e/ou Id da música");
 		}
 		const checkUser = await prisma.user.findUnique({
 			where: {
@@ -174,6 +177,9 @@ class ServiceUser {
 
 	//Lista as músicas já escutadas por determinado usuário
 	async musicsListenByUser(userId: number){
+		if(!userId){
+			throw new InvalidParamError("Informe um Id de usuário");
+		}
 		const musicsByUser = await prisma.user.findUnique({
 			where:{ id: userId },
 			select:{ musics: true }
