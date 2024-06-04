@@ -1,9 +1,27 @@
 import { User } from '.prisma/client';
 import prisma from '../../../../config/prismaClient'
+import { InvalidParamError } from '../../../../errors/InvalidParamError';
+import { QueryError } from '../../../../errors/QueryError';
 
 class ServiceUser {
 	//Cria um usuário
 	async create(body: User) {
+		const checkUser = await prisma.user.findUnique({
+			where: {
+				email: body.email
+			}
+		});
+
+		if(body.email == null){
+			throw new InvalidParamError("Email não informado.");
+		}
+		if(checkUser){
+			throw new QueryError("Esse email já esta cadastrado.");
+		}
+		if(body.password.length<6){
+			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
+		}
+
 		const createUser = await prisma.user.create({
 			data: {
 				name: body.name,
@@ -20,11 +38,21 @@ class ServiceUser {
 	//Retorna todos os usuários
 	async readAll() {
 		const readUser = await prisma.user.findMany();
+		
 		return readUser;
 	}
 
 	//Retorna um usuário pelo ID
 	async readById(id: number) {
+		const checkId = await prisma.user.findUnique({
+			where: {
+				id: id
+			}
+		});
+
+		if(id == null || !checkId){
+			throw new QueryError("Id de usuário inexistente e/ou inválido");
+		}
 		const readUserId = await prisma.user.findUnique({
 			where: { id: id }
 		});
