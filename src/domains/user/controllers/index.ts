@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { Router, Request, Response, NextFunction } from "express";
 import UserService from "../../user/services/UserService";
 
@@ -53,5 +54,42 @@ router.delete("/delete/:id", async (req: Request, res: Response, next:NextFuncti
 	}
 });
 
+//Lista as músicas do User
+router.get("/musics/:id", async (req: Request, res: Response, next:NextFunction) => {
+	try {
+		const userId = Number(req.params.id);
+
+		const getUserMusic = await UserService.musicsListenByUser(userId);
+		res.json(getUserMusic);
+	} catch (error) {
+		next(error);
+	}
+});
+
+//Adiciona uma música ao usuário
+router.put("/musics/add/:id", async (req: Request, res: Response, next:NextFunction) => {
+	try {
+		const userId = Number(req.params.id);
+        const { musicId } = req.body; 
+
+		const addUserMusic = await UserService.addMusicToUser(userId, Number(musicId));
+		res.json(addUserMusic);
+	} catch (error) {
+		next(error);
+	}
+});
+
+//Deleta uma música de um usuário
+router.delete("/musics/delete/:id", async (req: Request, res: Response, next:NextFunction) => {
+	try {
+		const userId = Number(req.params.id);
+		const { musicId } = req.body; 
+
+		const deleteUserMusic = await UserService.removeMusicFromUser(userId, Number(musicId));
+		res.json(deleteUserMusic);
+	} catch (error) {
+		next(error);
+	}
+});
 
 export default router; 

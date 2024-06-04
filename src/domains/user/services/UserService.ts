@@ -97,7 +97,7 @@ class ServiceUser {
 		const musicsByUser = await prisma.user.findUnique({
 			where:{ id: userId },
 			select:{ musics: true }
-		})
+		});
 		return musicsByUser;
 	}
 }
