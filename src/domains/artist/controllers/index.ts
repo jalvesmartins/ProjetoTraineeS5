@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import ArtistService from '../services/ArtistServices';
+import statusCodes from '../../../../utils/constants/statusCodes';
 
 const router = Router();
 const artistService = new ArtistService();
@@ -8,7 +9,7 @@ const artistService = new ArtistService();
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artist = await artistService.create(req.body);
-        res.json(artist);
+        res.status(statusCodes.CREATED).json(artist);
     } catch (error) {
         next(error);
     }
@@ -18,7 +19,7 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artists = await artistService.readAll();
-        res.json(artists);
+        res.status(statusCodes.SUCCESS).json(artists);
     } catch (error) {
         next(error);
     }
@@ -29,7 +30,10 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artist = await artistService.readById(Number(req.params.id));
-        res.json(artist);
+        if(!artist){
+            res.status(statusCodes.NOT_FOUND).json({message: "Artista não encontrado"});
+        }
+        res.status(statusCodes.SUCCESS).json(artist);
     } catch (error) {
         next(error);
     }
@@ -39,7 +43,10 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artist = await artistService.update(Number(req.params.id), req.body);
-        res.json(artist);
+        if(!artist){
+            res.status(statusCodes.NOT_FOUND).json({message: "Artista não encontrado"});
+        }
+        res.status(statusCodes.SUCCESS).json(artist);
     } catch (error) {
         next(error);
     }
@@ -49,7 +56,10 @@ router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
 router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artist = await artistService.delete(Number(req.params.id));
-        res.json(artist);
+        if(!artist){
+            res.status(statusCodes.NOT_FOUND).json({message: "Artista não encontrado"});
+        }
+        res.status(statusCodes.SUCCESS).json(artist);
     } catch (error) {
         next(error);
     }
