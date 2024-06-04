@@ -76,6 +76,10 @@ class ArtistService {
             throw new QueryError("Artista não encontrado");
         }
 
+        if (Object.keys(updateData).length === 0) {
+            throw new InvalidParamError("Nenhuma atualização foi fornecida");
+        }        
+
         const updatedArtist = await prisma.artist.update({
             where: { id: id },
             data: updateData
