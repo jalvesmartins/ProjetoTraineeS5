@@ -172,6 +172,9 @@ class ServiceUser {
 			},
 			include: { musics: true },
 		});
+		if(!updatedUser){
+			throw new QueryError("Essa música não esta atrelada ao usuário");
+		}
 		return updatedUser;
 	}
 
@@ -180,10 +183,21 @@ class ServiceUser {
 		if(!userId){
 			throw new InvalidParamError("Informe um Id de usuário");
 		}
+		const checkUser = await prisma.user.findUnique({
+			where: {
+				id: userId
+			}
+		});
+		if(!checkUser){
+			throw new QueryError("Usuário inválido e/ou inexistente");
+		}
 		const musicsByUser = await prisma.user.findUnique({
 			where:{ id: userId },
 			select:{ musics: true }
 		});
+		if(!musicsByUser){
+			throw new QueryError("Nenhuma música ouvida pelo usuário");
+		}
 		return musicsByUser;
 	}
 }
