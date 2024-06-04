@@ -6,14 +6,14 @@ import { QueryError } from '../../../../errors/QueryError';
 class ServiceUser {
 	//Cria um usuário
 	async create(body: User) {
+		if(body.email == null || body.email == undefined){
+			throw new InvalidParamError("Email não informado.");
+		}
 		const checkUser = await prisma.user.findUnique({
 			where: {
 				email: body.email
 			}
 		});
-		if(body.email == null){
-			throw new InvalidParamError("Email não informado.");
-		}
 		if(checkUser){
 			throw new QueryError("Esse email já esta cadastrado.");
 		}
@@ -64,6 +64,17 @@ class ServiceUser {
 		if(!id){
 			throw new InvalidParamError("Informe um Id de usuário.");
 		}
+		//if(body == null){
+		//	throw new InvalidParamError("Informe os dados de atualização");
+		//}
+		const checkUser = await prisma.user.findUnique({
+			where: {
+				id: id
+			}
+		});
+		if(!checkUser){
+			throw new InvalidParamError("Id de usuário inexistente e/ou inválido");
+		}
 		const updateData = {
 			...(body.name && { name: body.name }),
 			...(body.email && { email: body.email }),
@@ -71,17 +82,22 @@ class ServiceUser {
 			...(body.password && { password: body.password }),
 			...(body.role && { role: body.role }),
 		};
-		const checkUser = await prisma.user.findUnique({
-			where: {
-				email: body.email
-			}
-		});
 		//Autenticações das excessões
-		if(!updateData){
-			throw new InvalidParamError("Informe os dados de atualização");
+		if (Object.keys(updateData).length === 0) {
+			throw new InvalidParamError("Nenhuma atualização foi fornecida");
 		}
-		if(body.email == null || checkUser){
-			throw new InvalidParamError("Email inválido e/ou já cadastrado.");
+		if(body.email === null){
+			throw new InvalidParamError("Email inválido");
+		}
+		if(body.email != undefined){
+			const checkEmail = await prisma.user.findUnique({
+				where: {
+					email: body.email
+				}
+			});
+			if(checkEmail){
+				throw new InvalidParamError("Email inválido e/ou já cadastrado.");
+			}
 		}
 		if(body.password != undefined && body.password.length<6){
 			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
