@@ -1,3 +1,3 @@
 ### CARD -> DESENVOLVIMENTO
 ### Resumo do que foi feito
-_resumo_
+Resumo do que foi feito Todo o processo de tratamento de erros foi implementado para a entidade Artista.
