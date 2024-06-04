@@ -49,17 +49,12 @@ class ServiceUser {
 		if(!id){
 			throw new QueryError("Informe um Id de usuário");
 		}
-		const checkId = await prisma.user.findUnique({
-			where: {
-				id: id
-			}
-		});
-		if(!checkId){
-			throw new QueryError("Id de usuário inexistente e/ou inválido");
-		}
 		const readUserId = await prisma.user.findUnique({
 			where: { id: id }
 		});
+		if(!readUserId){
+			throw new QueryError("Id de usuário inexistente e/ou inválido");
+		}
 		return readUserId;
 	}
 
@@ -118,6 +113,28 @@ class ServiceUser {
 
 	//Adiciona música a um usuário
 	async addMusicToUser(userId: number, musicId: number) {
+		if(!userId || !musicId){
+			throw new QueryError("Informe um Id de usuário e/ou Id da música");
+		}
+
+		const checkUser = await prisma.user.findUnique({
+			where: {
+				id: userId
+			}
+		});
+		if(!checkUser){
+			throw new QueryError("Usuário inválido e/ou inexistente");
+		}
+
+		const checkMusic = await prisma.user.findUnique({
+			where: {
+				id: musicId
+			}
+		});
+		if(!checkMusic){
+			throw new QueryError("Música inválida e/ou inexistente");
+		}
+		
 		const updatedUser = await prisma.user.update({
 			where: { id: userId },
 			data: {
