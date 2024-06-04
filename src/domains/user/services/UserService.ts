@@ -34,7 +34,11 @@ class ServiceUser {
 
 	//Retorna todos os usuários
 	async readAll() {
-		const readUser = await prisma.user.findMany();
+		const readUser = await prisma.user.findMany({
+			orderBy: {
+				name:"asc"
+			}
+		});
 		if(!readUser){
 			throw new QueryError("Nenhum usuário cadastrado");
 		}
