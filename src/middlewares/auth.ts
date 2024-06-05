@@ -6,6 +6,8 @@ import { compare } from 'bcrypt';
 import statusCodes from '../../utils/constants/statusCodes';
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
 import { TokenError } from '../../errors/TokenError';
+import { userRoles } from '../../utils/constants/userRoles';
+import { NotAuthorizedError } from '../../errors/NotAuthorizedError';
 
 // Gera um token JWT para um usuário autenticado 
 function generateJWT(user: User, res: Response){
@@ -18,7 +20,7 @@ function generateJWT(user: User, res: Response){
     };
 
     // Gera o token JWT com as informações do usuário e uma chave secreta
-    const token = sign({ user: body }, process.env.SECRET_KEY || "", { expiresIn: process.env.JTW_EXPIRATION });
+    const token = sign({ user: body }, process.env.SECRET_KEY || "", { expiresIn: process.env.JWT_EXPIRATION });
 
     // Define o token JWT como um cookie HTTP na resposta
     res.cookie("jwt", token, {
@@ -73,7 +75,7 @@ export async function login(req: Request, res: Response, next: NextFunction){
         }
 
         // Compara a senha fornecida na requisição com a senha armazenada no banco de dados
-        const match = await compare(req.body.password, user.password);
+        const match = compare(req.body.password, user.password);
 
         // Se as senhas não corresponderem, lança um erro de permissão
         if(!match){
@@ -84,7 +86,21 @@ export async function login(req: Request, res: Response, next: NextFunction){
         generateJWT(user, res);
 
         // Retorna uma resposta de sucesso com status 204 No Content
-        res.status(statusCodes.NO_CONTENT).json("Login realizado com sucesso!");
+        res.status(statusCodes.SUCCESS).json("Login realizado com sucesso!");
+    } catch (error) {
+        next(error);
+    }
+}
+
+export function checkRole(req: Request, res: Response, next: NextFunction, roles: string[]){
+    try {
+        const allowed = roles.some(role => req.user.role === role);
+        
+        if(!allowed){
+            throw new NotAuthorizedError("Você não é autorizado a realizar essa ação!")
+        }
+
+        next();
     } catch (error) {
         next(error);
     }
