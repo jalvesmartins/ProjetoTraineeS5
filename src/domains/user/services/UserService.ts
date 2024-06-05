@@ -131,8 +131,11 @@ class ServiceUser {
 
 	//Adiciona música a um usuário
 	async addMusicToUser(userId: number, musicId: number) {
-		if(!userId || !musicId){
-			throw new InvalidParamError("Informe um Id de usuário e/ou Id da música");
+		if(!userId){
+			throw new InvalidParamError("Informe um Id de usuário");
+		}
+		if(!musicId){
+			throw new InvalidParamError("Informe um Id de música");
 		}
 		const checkUser = await prisma.user.findUnique({
 			where: {
@@ -142,7 +145,7 @@ class ServiceUser {
 		if(!checkUser){
 			throw new QueryError("Usuário inválido e/ou inexistente");
 		}
-		const checkMusic = await prisma.user.findUnique({
+		const checkMusic = await prisma.music.findUnique({
 			where: {
 				id: musicId
 			}
@@ -164,8 +167,11 @@ class ServiceUser {
         
 	//Remove uma música de um usuário 
 	async removeMusicFromUser(userId: number, musicId: number) {
-		if(!userId || !musicId){
-			throw new InvalidParamError("Informe um Id de usuário e/ou Id da música");
+		if(!userId){
+			throw new InvalidParamError("Informe um Id de usuário");
+		}
+		if(!musicId){
+			throw new InvalidParamError("Informe um Id de música");
 		}
 		const checkUser = await prisma.user.findUnique({
 			where: {
@@ -175,7 +181,7 @@ class ServiceUser {
 		if(!checkUser){
 			throw new QueryError("Usuário inválido e/ou inexistente");
 		}
-		const checkMusic = await prisma.user.findUnique({
+		const checkMusic = await prisma.music.findUnique({
 			where: {
 				id: musicId
 			}
@@ -192,9 +198,6 @@ class ServiceUser {
 			},
 			include: { musics: true },
 		});
-		if(!updatedUser){
-			throw new QueryError("Essa música não esta atrelada ao usuário");
-		}
 		return updatedUser;
 	}
 
@@ -215,9 +218,6 @@ class ServiceUser {
 			where:{ id: userId },
 			select:{ musics: true }
 		});
-		if(!musicsByUser){
-			throw new QueryError("Nenhuma música ouvida pelo usuário");
-		}
 		return musicsByUser;
 	}
 }
