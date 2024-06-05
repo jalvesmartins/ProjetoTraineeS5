@@ -67,7 +67,7 @@ class ArtistService {
             ...(body.photo && { photo: body.photo }),
             ...(body.stream && { stream: body.stream })
         };
-    
+        
         const checkArtist = await prisma.artist.findUnique({
             where: {id: id}
         });
