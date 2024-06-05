@@ -20,3 +20,11 @@ function genarateJWT(user: User, res: Response){
         secure: process.env.NODE_ENV !== "development"
     });
 }
+
+function cookieExtrator(req: Request){
+    let token = null;
+    if(req.cookies){
+        token = req.cookies["jwt"];
+    }
+    return token;
+}
