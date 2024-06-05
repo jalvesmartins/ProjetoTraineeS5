@@ -1,11 +1,13 @@
-import prisma, { User } from '@prisma/client';
+import prisma from '../../config/prismaClient'
+import { User } from '@prisma/client';
 import { Request, Response, NextFunction } from 'express';
 import { PermissionError } from '../../errors/PermissionError';
 import { compare } from 'bcrypt';
 import statusCodes from '../../utils/constants/statusCodes';
-import { sign } from 'jsonwebtoken';
+import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { TokenError } from '../../errors/TokenError';
 
-function genarateJWT(user: User, res: Response){
+function generateJWT(user: User, res: Response){
     const body = {
         id:user.id,
         email: user.email,
@@ -27,4 +29,20 @@ function cookieExtrator(req: Request){
         token = req.cookies["jwt"];
     }
     return token;
+}
+
+export function verifyJWT(req: Request, res: Response, next: NextFunction){
+    try {
+        const token = cookieExtrator(req);
+        if(token){
+            const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
+            req.user = decoded.user;
+        }
+        if(req.user == null){
+            throw new TokenError("Você precisa estar logado para realizar essa ação!");
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
 }
