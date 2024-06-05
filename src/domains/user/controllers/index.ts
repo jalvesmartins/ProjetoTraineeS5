@@ -1,6 +1,7 @@
 /* eslint-disable indent */
 import { Router, Request, Response, NextFunction } from "express";
 import UserService from "../../user/services/UserService";
+import statusCodes from "../../../../utils/constants/statusCodes";
 
 const router = Router();
 
@@ -8,7 +9,7 @@ const router = Router();
 router.get("/", async (req: Request, res: Response, next:NextFunction) => {
 	try {
 		const getUsers = await UserService.readAll();
-		res.json(getUsers);
+		res.status(statusCodes.SUCCESS).json(getUsers);
 	} catch (error) {
 		next(error);
 	}
@@ -18,7 +19,7 @@ router.get("/", async (req: Request, res: Response, next:NextFunction) => {
 router.get("/:id", async (req: Request, res: Response, next:NextFunction) => {
 	try {
 		const getUserById = await UserService.readById(Number(req.params.id));
-		res.json(getUserById);
+		res.status(statusCodes.SUCCESS).json(getUserById);
 	} catch (error) {
 		next(error);
 	}
@@ -28,7 +29,7 @@ router.get("/:id", async (req: Request, res: Response, next:NextFunction) => {
 router.post("/create", async (req: Request, res: Response, next:NextFunction) => {
 	try {
 		const createUser = await UserService.create(req.body);
-		res.json(createUser);
+		res.status(statusCodes.CREATED).json(createUser);
 	} catch (error) {
 		next(error);
 	}
@@ -38,7 +39,7 @@ router.post("/create", async (req: Request, res: Response, next:NextFunction) =>
 router.put("/update/:id", async (req: Request, res: Response, next:NextFunction) => {
 	try {
 		const updateUser = await UserService.update(Number(req.params.id), req.body);
-		res.json(updateUser);
+		res.status(statusCodes.SUCCESS).json(updateUser);
 	} catch (error) {
 		next(error);
 	}
@@ -48,7 +49,7 @@ router.put("/update/:id", async (req: Request, res: Response, next:NextFunction)
 router.delete("/delete/:id", async (req: Request, res: Response, next:NextFunction) => {
 	try {
 		const deleteUser = await UserService.delete(Number(req.params.id));
-		res.json(deleteUser);
+		res.status(statusCodes.SUCCESS).json(deleteUser);
 	} catch (error) {
 		next(error);
 	}
@@ -60,7 +61,7 @@ router.get("/musics/:id", async (req: Request, res: Response, next:NextFunction)
 		const userId = Number(req.params.id);
 
 		const getUserMusic = await UserService.musicsListenByUser(userId);
-		res.json(getUserMusic);
+		res.status(statusCodes.SUCCESS).json(getUserMusic);
 	} catch (error) {
 		next(error);
 	}
@@ -73,7 +74,7 @@ router.put("/musics/add/:id", async (req: Request, res: Response, next:NextFunct
         const { musicId } = req.body; 
 
 		const addUserMusic = await UserService.addMusicToUser(userId, Number(musicId));
-		res.json(addUserMusic);
+		res.status(statusCodes.SUCCESS).json(addUserMusic);
 	} catch (error) {
 		next(error);
 	}
@@ -86,7 +87,7 @@ router.delete("/musics/delete/:id", async (req: Request, res: Response, next:Nex
 		const { musicId } = req.body; 
 
 		const deleteUserMusic = await UserService.removeMusicFromUser(userId, Number(musicId));
-		res.json(deleteUserMusic);
+		res.status(statusCodes.SUCCESS).json(deleteUserMusic);
 	} catch (error) {
 		next(error);
 	}
