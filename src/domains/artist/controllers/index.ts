@@ -50,16 +50,19 @@ router.get('/:id', verifyJWT, (req: Request, res: Response, next: NextFunction) 
 });
 
 // Rota para atualizar um artista por ID
-router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const artist = await artistService.update(Number(req.params.id), req.body);
-        if(!artist){
-            res.status(statusCodes.NOT_FOUND).json({message: "Artista não encontrado"});
+router.put('/:id', verifyJWT, (req: Request, res: Response, next: NextFunction) => {
+        checkRole(req, res, next, ['admin']);
+    },
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const artist = await artistService.update(Number(req.params.id), req.body);
+            if(!artist){
+                res.status(statusCodes.NOT_FOUND).json({message: "Artista não encontrado"});
+            }
+            res.status(statusCodes.SUCCESS).json(artist);
+        } catch (error) {
+            next(error);
         }
-        res.status(statusCodes.SUCCESS).json(artist);
-    } catch (error) {
-        next(error);
-    }
 });
 
 // Rota para deletar um artista por ID
