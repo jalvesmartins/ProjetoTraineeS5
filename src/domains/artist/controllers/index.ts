@@ -1,19 +1,26 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import ArtistService from '../services/ArtistServices';
 import statusCodes from '../../../../utils/constants/statusCodes';
+import { checkRole, verifyJWT } from '../../../middlewares/auth';
 
 const router = Router();
 const artistService = new ArtistService();
 
 // Rota para criar um novo artista
-router.post('/', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const artist = await artistService.create(req.body);
-        res.status(statusCodes.CREATED).json(artist);
-    } catch (error) {
-        next(error);
+router.post('/', verifyJWT, (req: Request, res: Response, next: NextFunction) => {
+        checkRole(req, res, next, ['admin']);
+    },
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            // Se chegou até aqui, significa que o usuário é um administrador
+            // Portanto, pode criar um novo artista
+            const artist = await artistService.create(req.body);
+            res.status(statusCodes.CREATED).json(artist);
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
 // Rota para retornar todos os artistas
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
