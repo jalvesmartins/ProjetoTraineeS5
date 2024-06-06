@@ -83,7 +83,6 @@ class ServiceUser {
 			...(body.email && { email: body.email }),
 			...(body.photo && { photo: body.photo }),
 			...(body.password && { password: body.password }),
-			...(body.role && { role: body.role }),
 		};
 		//Autenticações das excessões
 		if (Object.keys(updateData).length === 0) {
@@ -104,6 +103,41 @@ class ServiceUser {
 		}
 		if(body.password != undefined && body.password.length<6){
 			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
+		}
+		const updatedUser = await prisma.user.update({
+			where: { id: id },
+			data: updateData
+		});
+		const user = await prisma.user.findUnique({
+			where: { id: id },
+		});
+		return user;
+	}
+
+	async updateRole(id: number, body: Partial<User>) {
+		if(!id){
+			throw new InvalidParamError("Informe um Id de usuário.");
+		}
+		//if(body == null){
+		//	throw new InvalidParamError("Informe os dados de atualização");
+		//}
+		const checkUser = await prisma.user.findUnique({
+			where: {
+				id: id
+			}
+		});
+		if(!checkUser){
+			throw new InvalidParamError("Id de usuário inexistente e/ou inválido");
+		}
+		const updateData = {
+			...(body.role && { role: body.role }),
+		};
+		//Autenticações das excessões
+		if (Object.keys(updateData).length === 0) {
+			throw new InvalidParamError("Nenhuma atualização foi fornecida");
+		}
+		if(body.role === null){
+			throw new InvalidParamError("Role inválido");
 		}
 		const updatedUser = await prisma.user.update({
 			where: { id: id },

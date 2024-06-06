@@ -33,4 +33,17 @@ async (req, res, next) => {
 }
 );
 
+router.put("/account/update", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+	checkRole(req, res, next, ["admin", "user"]);
+},
+async (req, res, next) => {
+	try {
+		const updateUser = await UserService.update(Number(req.user.id), req.body);
+		res.status(statusCodes.SUCCESS).json(updateUser);
+	} catch (error) {
+		next(error);
+	}
+}
+);
+
 export default router; 

@@ -64,6 +64,20 @@ router.put("/:id/update", verifyJWT, (req: Request, res: Response, next:NextFunc
 	}
 );
 
+//Atualiza o role de um usuário
+router.put("/:id/update/role", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+	checkRole(req, res, next, ["admin"]);
+},
+async (req, res, next) => {
+try {
+	const updateUser = await UserService.update(Number(req.params.id), req.body);
+	res.status(statusCodes.SUCCESS).json(updateUser);
+} catch (error) {
+	next(error);
+}
+}
+);
+
 //Deleta um usuário pelo ID
 router.delete("/:id/delete", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 		checkRole(req, res, next, ["admin"]);
