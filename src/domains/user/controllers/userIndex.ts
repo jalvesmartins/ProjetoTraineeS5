@@ -46,4 +46,48 @@ async (req, res, next) => {
 }
 );
 
+router.delete("/account/delete", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+	checkRole(req, res, next, ["admin", "user"]);
+},
+async (req, res, next) => {
+	try {
+		const deleteUser = await UserService.delete(Number(req.user.id));
+		res.status(statusCodes.SUCCESS).json(deleteUser);
+	} catch (error) {
+		next(error);
+	}
+}
+);
+
+//Lista as músicas do User
+router.get("/account/musics", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+	checkRole(req, res, next, ["admin", "user"]);
+},
+async (req, res, next) => {
+	try {
+		const userId = Number(req.user.id);
+		const getUserMusic = await UserService.musicsListenByUser(userId);
+		res.status(statusCodes.SUCCESS).json(getUserMusic);
+	} catch (error) {
+		next(error);
+	}
+}
+);
+
+//Adiciona uma música ao usuário
+router.put("/account/musics/add", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+	checkRole(req, res, next, ["admin", "user"]);
+},
+async (req, res, next) => {
+	try {
+		const userId = Number(req.user.id);
+		const { musicId } = req.body; 
+		const addUserMusic = await UserService.addMusicToUser(userId, Number(musicId));
+		res.status(statusCodes.SUCCESS).json(addUserMusic);
+	} catch (error) {
+		next(error);
+	}
+}
+);
+
 export default router; 
