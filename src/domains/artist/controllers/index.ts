@@ -66,16 +66,19 @@ router.put('/:id', verifyJWT, (req: Request, res: Response, next: NextFunction) 
 });
 
 // Rota para deletar um artista por ID
-router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const artist = await artistService.delete(Number(req.params.id));
-        if(!artist){
-            res.status(statusCodes.NOT_FOUND).json({message: "Artista não encontrado"});
+router.delete('/:id', verifyJWT, (req: Request, res: Response, next: NextFunction) => {
+        checkRole(req, res, next, ['admin']);
+    },
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const artist = await artistService.delete(Number(req.params.id));
+            if(!artist){
+                res.status(statusCodes.NOT_FOUND).json({message: "Artista não encontrado"});
+            }
+            res.status(statusCodes.SUCCESS).json(artist);
+        } catch (error) {
+            next(error);
         }
-        res.status(statusCodes.SUCCESS).json(artist);
-    } catch (error) {
-        next(error);
-    }
 });
 
 export default router; 
