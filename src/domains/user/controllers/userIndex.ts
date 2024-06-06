@@ -90,4 +90,21 @@ async (req, res, next) => {
 }
 );
 
+//Deleta uma música de um usuário
+router.delete("/account/musics/delete", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+	checkRole(req, res, next, ["admin", "user"]);
+},
+async (req, res, next) => {
+	try {
+		const userId = Number(req.user.id);
+		const { musicId } = req.body; 
+		const deleteUserMusic = await UserService.removeMusicFromUser(userId, Number(musicId));
+		res.status(statusCodes.SUCCESS).json(deleteUserMusic);
+	} catch (error) {
+		next(error);
+	}
+}
+);
+
+
 export default router; 
