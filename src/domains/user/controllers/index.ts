@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { Router, Request, Response, NextFunction } from "express";
 import UserService from "../../user/services/UserService";
-import { checkRole, login, verifyJWT } from "../../../middlewares/auth";
+import { checkRole, login, logout, verifyJWT } from "../../../middlewares/auth";
 import statusCodes from "../../../../utils/constants/statusCodes";
 
 
@@ -9,6 +9,8 @@ const router = Router();
 
 //Rota para realizar o login
 router.post("/login", login); //implementar rota
+
+router.post("/logout", verifyJWT, logout);
 
 //Lista todos os usuários
 router.get("/", verifyJWT, (req: Request, res: Response, next:NextFunction) => {

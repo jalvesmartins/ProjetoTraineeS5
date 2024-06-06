@@ -105,3 +105,13 @@ export function checkRole(req: Request, res: Response, next: NextFunction, roles
         next(error);
     }
 }
+
+export  function logout(req: Request, res: Response, next: NextFunction){
+    try {
+        res.clearCookie("jwt");
+        res.redirect("/login");
+        res.status(statusCodes.SUCCESS).json("Logout realizado com sucesso!");
+    } catch (error) {
+        next(error);
+    }
+}   
