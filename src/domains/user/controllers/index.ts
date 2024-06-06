@@ -50,6 +50,17 @@ router.put("/update/:id", async (req: Request, res: Response, next:NextFunction)
 	}
 });
 
+//Atualiza um role de usuário
+router.put("/update/role/:id", async (req: Request, res: Response, next:NextFunction) => {
+	try {
+		const updateUser = await UserService.updateRole(Number(req.params.id), req.body);
+		res.status(statusCodes.SUCCESS).json(updateUser);
+	} catch (error) {
+		next(error);
+	}
+});
+
+
 //Deleta um usuário pelo ID
 router.delete("/delete/:id", async (req: Request, res: Response, next:NextFunction) => {
 	try {

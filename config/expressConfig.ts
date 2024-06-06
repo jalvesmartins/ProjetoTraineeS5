@@ -23,4 +23,4 @@ app.use(express.urlencoded({ extended: true }));
 // Implementar rotas
 app.use('/api/artist', ArtistRouter);
 app.use("/api/users", UserRouter);
-app.use('/api/music', MusicRouter)
+app.use('/api/music', MusicRouter);
