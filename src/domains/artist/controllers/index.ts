@@ -12,8 +12,6 @@ router.post('/', verifyJWT, (req: Request, res: Response, next: NextFunction) =>
     },
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            // Se chegou até aqui, significa que o usuário é um administrador
-            // Portanto, pode criar um novo artista
             const artist = await artistService.create(req.body);
             res.status(statusCodes.CREATED).json(artist);
         } catch (error) {
@@ -23,15 +21,17 @@ router.post('/', verifyJWT, (req: Request, res: Response, next: NextFunction) =>
 );
 
 // Rota para retornar todos os artistas
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const artists = await artistService.readAll();
-        res.status(statusCodes.SUCCESS).json(artists);
-    } catch (error) {
-        next(error);
-    }
-
-});
+router.get('/', verifyJWT, (req: Request, res: Response, next: NextFunction) => {
+        checkRole(req, res, next, ['user','admin']);
+    },
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const artists = await artistService.readAll();
+            res.status(statusCodes.SUCCESS).json(artists);
+        } catch (error) {
+            next(error);
+        }
+    });
 
 //Rota para retornar um artista por ID
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
