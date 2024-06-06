@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { Router, Request, Response, NextFunction } from "express";
 import UserService from "../../user/services/UserService";
-import { login } from "../../../middlewares/auth";
+import { checkRole, login, verifyJWT } from "../../../middlewares/auth";
 import statusCodes from "../../../../utils/constants/statusCodes";
 
 
@@ -11,24 +11,32 @@ const router = Router();
 router.post("/login", login); //implementar rota
 
 //Lista todos os usuários
-router.get("/", async (req: Request, res: Response, next:NextFunction) => {
+router.get("/", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+		checkRole(req, res, next, ["admin"]);
+	},
+	async (req, res, next) => {
 	try {
 		const getUsers = await UserService.readAll();
 		res.status(statusCodes.SUCCESS).json(getUsers);
 	} catch (error) {
 		next(error);
 	}
-});
+	}
+);
 
 //Lista usuários por ID
-router.get("/:id", async (req: Request, res: Response, next:NextFunction) => {
+router.get("/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+		checkRole(req, res, next, ["admin"]);
+},
+	async (req, res, next) => {
 	try {
 		const getUserById = await UserService.readById(Number(req.params.id));
 		res.status(statusCodes.SUCCESS).json(getUserById);
 	} catch (error) {
 		next(error);
 	}
-});
+	}
+);
 
 //Cria um usuário
 router.post("/create", async (req: Request, res: Response, next:NextFunction) => {
@@ -41,38 +49,53 @@ router.post("/create", async (req: Request, res: Response, next:NextFunction) =>
 });
 
 //Atualiza um usuário pelo ID
-router.put("/update/:id", async (req: Request, res: Response, next:NextFunction) => {
+router.put("/update/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+		checkRole(req, res, next, ["admin"]);
+	},
+	async (req, res, next) => {
 	try {
 		const updateUser = await UserService.update(Number(req.params.id), req.body);
 		res.status(statusCodes.SUCCESS).json(updateUser);
 	} catch (error) {
 		next(error);
 	}
-});
+	}
+);
 
 //Atualiza um role de usuário
-router.put("/update/role/:id", async (req: Request, res: Response, next:NextFunction) => {
+router.put("/update/role/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+		checkRole(req, res, next, ["admin"]);
+	},
+	async (req, res, next) => {
 	try {
 		const updateUser = await UserService.updateRole(Number(req.params.id), req.body);
 		res.status(statusCodes.SUCCESS).json(updateUser);
 	} catch (error) {
 		next(error);
 	}
-});
+	}
+);
 
 
 //Deleta um usuário pelo ID
-router.delete("/delete/:id", async (req: Request, res: Response, next:NextFunction) => {
+router.delete("/delete/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+		checkRole(req, res, next, ["admin"]);
+	},
+	async (req, res, next) => {
 	try {
 		const deleteUser = await UserService.delete(Number(req.params.id));
 		res.status(statusCodes.SUCCESS).json(deleteUser);
 	} catch (error) {
 		next(error);
 	}
-});
+	}
+);
 
 //Lista as músicas do User
-router.get("/musics/:id", async (req: Request, res: Response, next:NextFunction) => {
+router.get("/musics/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+		checkRole(req, res, next, ["admin"]);
+	},
+	async (req, res, next) => {
 	try {
 		const userId = Number(req.params.id);
 
@@ -81,10 +104,14 @@ router.get("/musics/:id", async (req: Request, res: Response, next:NextFunction)
 	} catch (error) {
 		next(error);
 	}
-});
+	}
+);
 
 //Adiciona uma música ao usuário
-router.put("/musics/add/:id", async (req: Request, res: Response, next:NextFunction) => {
+router.put("/musics/add/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+		checkRole(req, res, next, ["admin"]);
+	},
+	async (req, res, next) => {
 	try {
 		const userId = Number(req.params.id);
         const { musicId } = req.body; 
@@ -94,10 +121,14 @@ router.put("/musics/add/:id", async (req: Request, res: Response, next:NextFunct
 	} catch (error) {
 		next(error);
 	}
-});
+	}
+);
 
 //Deleta uma música de um usuário
-router.delete("/musics/delete/:id", async (req: Request, res: Response, next:NextFunction) => {
+router.delete("/musics/delete/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+		checkRole(req, res, next, ["admin"]);
+	},
+	async (req, res, next) => {
 	try {
 		const userId = Number(req.params.id);
 		const { musicId } = req.body; 
@@ -107,6 +138,7 @@ router.delete("/musics/delete/:id", async (req: Request, res: Response, next:Nex
 	} catch (error) {
 		next(error);
 	}
-});
+	}
+);
 
 export default router; 
