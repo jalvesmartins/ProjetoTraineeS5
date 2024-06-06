@@ -20,7 +20,7 @@ function generateJWT(user: User, res: Response){
     };
 
     // Gera o token JWT com as informações do usuário e uma chave secreta
-    const token = sign({ user: body }, process.env.SECRET_KEY || "", { expiresIn: process.env.JWT_EXPIRATION });
+    const token = sign({ user: body }, process.env.SECRET_KEY || "", { expiresIn: process.env.JTW_EXPIRATION });
 
     // Define o token JWT como um cookie HTTP na resposta
     res.cookie("jwt", token, {
@@ -109,7 +109,6 @@ export function checkRole(req: Request, res: Response, next: NextFunction, roles
 export  function logout(req: Request, res: Response, next: NextFunction){
     try {
         res.clearCookie("jwt");
-        res.redirect("/login");
         res.status(statusCodes.SUCCESS).json("Logout realizado com sucesso!");
     } catch (error) {
         next(error);

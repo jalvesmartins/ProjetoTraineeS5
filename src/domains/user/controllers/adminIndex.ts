@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import { Router, Request, Response, NextFunction } from "express";
-import UserService from "../../user/services/UserService";
+import UserService from "../services/UserService";
 import { checkRole, login, logout, verifyJWT } from "../../../middlewares/auth";
 import statusCodes from "../../../../utils/constants/statusCodes";
 
@@ -8,7 +8,7 @@ import statusCodes from "../../../../utils/constants/statusCodes";
 const router = Router();
 
 //Rota para realizar o login
-router.post("/login", login); //implementar rota
+router.post("/login", login);
 
 router.post("/logout", verifyJWT, logout);
 
@@ -51,7 +51,7 @@ router.post("/create", async (req: Request, res: Response, next:NextFunction) =>
 });
 
 //Atualiza um usuário pelo ID
-router.put("/update/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+router.put("/:id/update", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 		checkRole(req, res, next, ["admin"]);
 	},
 	async (req, res, next) => {
@@ -64,23 +64,8 @@ router.put("/update/:id", verifyJWT, (req: Request, res: Response, next:NextFunc
 	}
 );
 
-//Atualiza um role de usuário
-router.put("/update/role/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
-		checkRole(req, res, next, ["admin"]);
-	},
-	async (req, res, next) => {
-	try {
-		const updateUser = await UserService.updateRole(Number(req.params.id), req.body);
-		res.status(statusCodes.SUCCESS).json(updateUser);
-	} catch (error) {
-		next(error);
-	}
-	}
-);
-
-
 //Deleta um usuário pelo ID
-router.delete("/delete/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+router.delete("/:id/delete", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 		checkRole(req, res, next, ["admin"]);
 	},
 	async (req, res, next) => {
@@ -94,7 +79,7 @@ router.delete("/delete/:id", verifyJWT, (req: Request, res: Response, next:NextF
 );
 
 //Lista as músicas do User
-router.get("/musics/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+router.get("/:id/musics", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 		checkRole(req, res, next, ["admin"]);
 	},
 	async (req, res, next) => {
@@ -110,7 +95,7 @@ router.get("/musics/:id", verifyJWT, (req: Request, res: Response, next:NextFunc
 );
 
 //Adiciona uma música ao usuário
-router.put("/musics/add/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+router.put("/:id/musics/add", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 		checkRole(req, res, next, ["admin"]);
 	},
 	async (req, res, next) => {
@@ -127,7 +112,7 @@ router.put("/musics/add/:id", verifyJWT, (req: Request, res: Response, next:Next
 );
 
 //Deleta uma música de um usuário
-router.delete("/musics/delete/:id", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+router.delete(":id/musics/delete", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 		checkRole(req, res, next, ["admin"]);
 	},
 	async (req, res, next) => {
