@@ -34,16 +34,19 @@ router.get('/', verifyJWT, (req: Request, res: Response, next: NextFunction) => 
     });
 
 //Rota para retornar um artista por ID
-router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const artist = await artistService.readById(Number(req.params.id));
-        if(!artist){
-            res.status(statusCodes.NOT_FOUND).json({message: "Artista não encontrado"});
+router.get('/:id', verifyJWT, (req: Request, res: Response, next: NextFunction) => {
+        checkRole(req, res, next, ['user','admin']);
+    },
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const artist = await artistService.readById(Number(req.params.id));
+            if(!artist){
+                res.status(statusCodes.NOT_FOUND).json({message: "Artista não encontrado"});
+            }
+            res.status(statusCodes.SUCCESS).json(artist);
+        } catch (error) {
+            next(error);
         }
-        res.status(statusCodes.SUCCESS).json(artist);
-    } catch (error) {
-        next(error);
-    }
 });
 
 // Rota para atualizar um artista por ID
