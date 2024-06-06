@@ -17,18 +17,19 @@ router.post("/create", async (req: Request, res: Response, next:NextFunction) =>
 	} catch (error) {
 		next(error);
 	}
-});
+}
+);
 
 router.get("/account", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
-    checkRole(req, res, next, ["admin", "user"]);
+	checkRole(req, res, next, ["admin", "user"]);
 },
 async (req, res, next) => {
-try {
-    const getUserById = await UserService.readById(Number(req.params.id));
-    res.status(statusCodes.SUCCESS).json(getUserById);
-} catch (error) {
-    next(error);
-}
+	try {
+		const getUserById = await UserService.readById(Number(req.user.id));
+		res.status(statusCodes.SUCCESS).json(getUserById);
+	} catch (error) {
+		next(error);
+	}
 }
 );
 
