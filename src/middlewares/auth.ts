@@ -59,6 +59,25 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction){
     }
 }
 
+//Checa se o usuário ainda não está logado
+export function notLoggedIn(req: Request, res: Response, next: NextFunction){
+    try {
+        //Extrai o token JWT
+        const token = cookieExtractor(req);
+         if (token) {
+            //Verifica se o token é válido
+            const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
+            if (decoded.user) {
+                //verifica se o usuário está logado e, caso esteja, manda um erro de permissão
+                throw new PermissionError("Você já está logado");
+            }
+         }
+         next(); //caso contrário, prossegue para fazer login
+    } catch (error) { 
+        next(error);
+    }
+}
+
 // Responsável pelo processo de login do usuário
 export async function login(req: Request, res: Response, next: NextFunction){
     try {

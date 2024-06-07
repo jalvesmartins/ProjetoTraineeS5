@@ -1,14 +1,25 @@
 /* eslint-disable indent */
 import { Router, Request, Response, NextFunction } from "express";
 import UserService from "../../user/services/UserService";
-import { login } from "../../../middlewares/auth";
+import { login, notLoggedIn } from "../../../middlewares/auth";
 import statusCodes from "../../../../utils/constants/statusCodes";
 
 
 const router = Router();
 
 //Rota para realizar o login
-router.post("/login", login); //implementar rota
+router.post("/login", async (req: Request, res: Response, next:NextFunction) => {
+	try {
+		const{ email, password } = req.body;
+		if (!email || !password) {
+			return res.status(statusCodes.BAD_REQUEST).json({ message: 'Email ou senha inválidos.'});
+		}
+		await notLoggedIn(req, res, next);
+		await login(req, res, next);
+	} catch (error) {
+		next(error);
+	}
+});
 
 //Lista todos os usuários
 router.get("/", async (req: Request, res: Response, next:NextFunction) => {
