@@ -46,6 +46,19 @@ async (req, res, next) => {
 }
 );
 
+router.put("/account/update/password", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+	checkRole(req, res, next, ["admin", "user"]);
+},
+async (req, res, next) => {
+	try {
+		const updateUser = await UserService.updatePassword(Number(req.user.id), req.body);
+		res.status(statusCodes.SUCCESS).json(updateUser);
+	} catch (error) {
+		next(error);
+	}
+}
+);
+
 router.delete("/account/delete", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 	checkRole(req, res, next, ["admin", "user"]);
 },

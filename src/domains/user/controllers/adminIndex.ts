@@ -78,6 +78,19 @@ try {
 }
 );
 
+router.put("/:id/update/password", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+	checkRole(req, res, next, ["admin"]);
+},
+async (req, res, next) => {
+	try {
+		const updateUser = await UserService.updatePassword(Number(req.params.id), req.body);
+		res.status(statusCodes.SUCCESS).json(updateUser);
+	} catch (error) {
+		next(error);
+	}
+}
+);
+
 //Deleta um usuário pelo ID
 router.delete("/:id/delete", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 		checkRole(req, res, next, ["admin"]);
