@@ -70,7 +70,7 @@ router.put("/:id/update/role", verifyJWT, (req: Request, res: Response, next:Nex
 },
 async (req, res, next) => {
 try {
-	const updateUser = await UserService.update(Number(req.params.id), req.body);
+	const updateUser = await UserService.updateRole(Number(req.params.id), req.body);
 	res.status(statusCodes.SUCCESS).json(updateUser);
 } catch (error) {
 	next(error);
