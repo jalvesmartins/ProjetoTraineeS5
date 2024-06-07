@@ -2,9 +2,16 @@ import { User } from '.prisma/client';
 import prisma from '../../../../config/prismaClient'
 import { InvalidParamError } from '../../../../errors/InvalidParamError';
 import { QueryError } from '../../../../errors/QueryError';
+import bcrypt from 'bcrypt';
 
 class ServiceUser {
 	//Cria um usuário
+	async encryptPassword(password: string){
+		const saltRounds = 10;
+		const encrypted = await bcrypt.hash(password, saltRounds);
+		return encrypted;
+	}
+	
 	async create(body: User) {
 		if(body.email == null || body.email == undefined){
 			throw new InvalidParamError("Email não informado.");
@@ -20,12 +27,14 @@ class ServiceUser {
 		if(body.password.length<6){
 			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
 		}
+		//senha criptografada conforme o método encryptPassword
+		const encrypted = await this.encryptPassword(body.password);
 		const createUser = await prisma.user.create({
 			data: {
 				name: body.name,
 				email: body.email,
 				photo: body.photo,
-				password: body.password,
+				password: encrypted,
 				role: body.role
 			}
 		});
