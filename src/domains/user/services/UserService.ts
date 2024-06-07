@@ -2,8 +2,14 @@ import { User } from '.prisma/client';
 import prisma from '../../../../config/prismaClient'
 import { InvalidParamError } from '../../../../errors/InvalidParamError';
 import { QueryError } from '../../../../errors/QueryError';
+import bcrypt from "bcrypt";
 
 class ServiceUser {
+	async encryptPassword(password: string){
+		const saltRounds = 10;
+		const encrypted = await bcrypt.hash(password, saltRounds);
+		return encrypted;
+	}
 	//Cria um usuário
 	async create(body: User) {
 		if(body.email == null || body.email == undefined){
@@ -23,12 +29,15 @@ class ServiceUser {
 		if(body.role == "admin"){
 			throw new InvalidParamError("Você não tem permissão para criar uma conta admin, insira o role de user");
 		}
+		
+		const encrypted = await this.encryptPassword(body.password);
+
 		const createUser = await prisma.user.create({
 			data: {
 				name: body.name,
 				email: body.email,
 				photo: body.photo,
-				password: body.password,
+				password: encrypted,
 				role: body.role
 			}
 		});
