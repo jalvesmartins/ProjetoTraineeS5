@@ -126,14 +126,13 @@ router.put("/:id/musics/add", verifyJWT, (req: Request, res: Response, next:Next
 );
 
 //Deleta uma música de um usuário
-router.delete(":id/musics/delete", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+router.delete("/:id/musics/delete", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 		checkRole(req, res, next, ["admin"]);
 	},
 	async (req, res, next) => {
 	try {
 		const userId = Number(req.params.id);
 		const { musicId } = req.body; 
-
 		const deleteUserMusic = await UserService.removeMusicFromUser(userId, Number(musicId));
 		res.status(statusCodes.SUCCESS).json(deleteUserMusic);
 	} catch (error) {
