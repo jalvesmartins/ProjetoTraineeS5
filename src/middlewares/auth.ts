@@ -20,7 +20,7 @@ function generateJWT(user: User, res: Response){
     };
 
     // Gera o token JWT com as informações do usuário e uma chave secreta
-    const token = sign({ user: body }, process.env.SECRET_KEY || "", { expiresIn: process.env.JTW_EXPIRATION });
+    const token = sign({ user: body }, process.env.SECRET_KEY || "", { expiresIn: process.env.JWT_EXPIRATION });
 
     // Define o token JWT como um cookie HTTP na resposta
     res.cookie("jwt", token, {

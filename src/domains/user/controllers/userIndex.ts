@@ -75,7 +75,7 @@ async (req, res, next) => {
 );
 
 //Adiciona uma música ao usuário
-router.put("/account/musics/add", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+router.put("/account/musics/listen", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 	checkRole(req, res, next, ["admin", "user"]);
 },
 async (req, res, next) => {
@@ -91,7 +91,7 @@ async (req, res, next) => {
 );
 
 //Deleta uma música de um usuário
-router.delete("/account/musics/delete", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
+router.delete("/account/musics/unlisten", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 	checkRole(req, res, next, ["admin", "user"]);
 },
 async (req, res, next) => {
