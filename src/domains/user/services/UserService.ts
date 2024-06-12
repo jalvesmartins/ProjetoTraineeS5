@@ -11,6 +11,12 @@ class ServiceUser {
 		return encrypted;
 	}
 	//Cria um usuário
+	async encryptPassword(password: string){
+		const saltRounds = 10;
+		const encrypted = await bcrypt.hash(password, saltRounds);
+		return encrypted;
+	}
+	
 	async create(body: User) {
 		if(body.email == null || body.email == undefined){
 			throw new InvalidParamError("Email não informado.");
@@ -37,6 +43,7 @@ class ServiceUser {
 				name: body.name,
 				email: body.email,
 				photo: body.photo,
+				password: encrypted,
 				password: encrypted,
 				role: body.role
 			}
