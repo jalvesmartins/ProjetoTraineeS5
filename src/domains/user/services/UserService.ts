@@ -2,9 +2,14 @@ import { User } from '.prisma/client';
 import prisma from '../../../../config/prismaClient'
 import { InvalidParamError } from '../../../../errors/InvalidParamError';
 import { QueryError } from '../../../../errors/QueryError';
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
 class ServiceUser {
+	async encryptPassword(password: string){
+		const saltRounds = 10;
+		const encrypted = await bcrypt.hash(password, saltRounds);
+		return encrypted;
+	}
 	//Cria um usuário
 	async encryptPassword(password: string){
 		const saltRounds = 10;
@@ -27,13 +32,18 @@ class ServiceUser {
 		if(body.password.length<6){
 			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
 		}
-		//senha criptografada conforme o método encryptPassword
+		if(body.role == "admin"){
+			throw new InvalidParamError("Você não tem permissão para criar uma conta admin, insira o role de user");
+		}
+
 		const encrypted = await this.encryptPassword(body.password);
+
 		const createUser = await prisma.user.create({
 			data: {
 				name: body.name,
 				email: body.email,
 				photo: body.photo,
+				password: encrypted,
 				password: encrypted,
 				role: body.role
 			}
@@ -73,9 +83,9 @@ class ServiceUser {
 		if(!id){
 			throw new InvalidParamError("Informe um Id de usuário.");
 		}
-		//if(body == null){
-		//	throw new InvalidParamError("Informe os dados de atualização");
-		//}
+		if(body == null){
+			throw new InvalidParamError("Informe os dados de atualização");
+		}
 		const checkUser = await prisma.user.findUnique({
 			where: {
 				id: id
@@ -88,8 +98,6 @@ class ServiceUser {
 			...(body.name && { name: body.name }),
 			...(body.email && { email: body.email }),
 			...(body.photo && { photo: body.photo }),
-			...(body.password && { password: body.password }),
-			...(body.role && { role: body.role }),
 		};
 		//Autenticações das excessões
 		if (Object.keys(updateData).length === 0) {
@@ -108,12 +116,84 @@ class ServiceUser {
 				throw new InvalidParamError("Email inválido e/ou já cadastrado.");
 			}
 		}
-		if(body.password != undefined && body.password.length<6){
-			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
-		}
 		const updatedUser = await prisma.user.update({
 			where: { id: id },
 			data: updateData
+		});
+		const user = await prisma.user.findUnique({
+			where: { id: id },
+		});
+		return user;
+	}
+
+	async updateRole(id: number, body: Partial<User>) {
+		if(!id){
+			throw new InvalidParamError("Informe um Id de usuário.");
+		}
+		const checkUser = await prisma.user.findUnique({
+			where: {
+				id: id
+			}
+		});
+		if(!checkUser){
+			throw new InvalidParamError("Id de usuário inexistente e/ou inválido");
+		}
+		const updateData = {
+			...(body.role && { role: body.role }),
+		};
+		//Autenticações das excessões
+		if (Object.keys(updateData).length === 0) {
+			throw new InvalidParamError("Nenhuma atualização foi fornecida");
+		}
+		if(body.role === null){
+			throw new InvalidParamError("Role inválido");
+		}
+		const roleData = String(updateData);
+		const updatedUser = await prisma.user.update({
+			where: { id: id },
+			data: {
+				role: roleData
+			}
+		});
+		const user = await prisma.user.findUnique({
+			where: { id: id },
+		});
+		return user;
+	}
+
+	async updatePassword(id: number, body: Partial<User>) {
+		if(!id){
+			throw new InvalidParamError("Informe um Id de usuário.");
+		}
+		const checkUser = await prisma.user.findUnique({
+			where: {
+				id: id
+			}
+		});
+		if(!checkUser){
+			throw new InvalidParamError("Id de usuário inexistente e/ou inválido");
+		}
+		const updateData = {
+			...(body.password && { password: body.password }),
+		};
+		//Autenticações das excessões
+		if (Object.keys(updateData).length === 0) {
+			throw new InvalidParamError("Nenhuma atualização foi fornecida");
+		}
+		if(body.password === null){
+			throw new InvalidParamError("Senha inválida");
+		}
+		if(body.password != undefined && body.password.length<6){
+			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
+		}
+
+		const encrypted = await this.encryptPassword(String(updateData));
+
+		const updatedUser = await prisma.user.update({
+			where: { id: id },
+			data: {
+				password: encrypted
+			}
 		});
 		const user = await prisma.user.findUnique({
 			where: { id: id },
