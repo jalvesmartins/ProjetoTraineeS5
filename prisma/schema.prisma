@@ -3,11 +3,12 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"  
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -17,14 +18,14 @@ model User {
   photo     String?
   password  String
   role      String
-  musics     Music[]
+  musics    Music[]
 }
 
 model Artist {
   id        Int @id @default(autoincrement())
   name      String
   photo     String?
-  stream    Int 
+  stream    Int
   musics    Music[]
 }
 
@@ -34,6 +35,6 @@ model Music {
   genre     String
   album     String
   author    Artist  @relation(fields: [authorId], references: [id])
-  authorId  Int   
-  users     User[] 
-  } 
+  authorId  Int
+  users     User[]
+}
