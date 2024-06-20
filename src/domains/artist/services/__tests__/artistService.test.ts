@@ -23,6 +23,16 @@ describe('ArtistService', () => {
 
         await expect(artistService.create(artist)).resolves.toEqual(artist);
     });
-  });
 
+    test('deveria lançar InvalidParamError se o nome estiver faltando', async () => {
+        const artist = {
+            id:1,
+            name:'',
+            photo:'url-photo',
+            stream:1000
+        }
+        await expect(artistService.create(artist as any)).rejects.toThrow(InvalidParamError);
+    });
+
+  });
 });
