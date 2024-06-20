@@ -11,5 +11,18 @@ describe('ArtistService', () => {
     mockReset(prismaMock);
   });
 
+  describe('create', () => {
+    test('deveria criar um novo artista', async () => {
+        const artist = {
+            id: 1,
+            name: 'Artist Name',
+            photo: 'url-photo',
+            stream:1000,
+        };
+        prismaMock.artist.create.mockResolvedValue(artist);
+
+        await expect(artistService.create(artist)).resolves.toEqual(artist);
+    });
+  });
 
 });
