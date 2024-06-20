@@ -44,4 +44,17 @@ describe('ArtistService', () => {
         await expect(artistService.create(artist as any)).rejects.toThrow(InvalidParamError);
     });
   });
+
+  describe('readAll', () => {
+    test('deveria retornar todos os artistas', async() => {
+        const artists = [
+            { id: 1, name: 'Artist One', photo: 'url/to/photo1', stream: 1000 },
+            { id: 2, name: 'Artist Two', photo: 'url/to/photo2', stream: 2000 },
+        ];
+        prismaMock.artist.findMany.mockResolvedValue(artists);
+        await expect(artistService.readAll()).resolves.toEqual(artists);
+    })
+
+  });
+
 });
