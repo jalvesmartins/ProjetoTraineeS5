@@ -1,16 +1,15 @@
-version: '3.9'
+version: '3.8'
 
 services:
   api:
     build:
-      context: backend
+      context: .
     container_name: backendEJ
-    restart: always
     ports:
       - "3030:3030"
     volumes:
       - .:/app
-    command: npx prisma migrate deploy && npm start
+    command: sh -c "npx prisma migrate deploy && npm start"
     depends_on:
       - mysql
     env_file:
