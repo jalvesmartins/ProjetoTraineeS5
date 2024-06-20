@@ -43,6 +43,16 @@ describe('ArtistService', () => {
         }
         await expect(artistService.create(artist as any)).rejects.toThrow(InvalidParamError);
     });
+
+    test('deveria lançar InvalidParamError se algum dado for inválido', async () => {
+        const invalidArtist = {
+          id: 1,
+          name: 12345, 
+          photo: 'url-photo',
+          stream: 1000
+        };
+        await expect(artistService.create(invalidArtist as any)).rejects.toThrow(InvalidParamError);
+      });
   });
 
   describe('readAll', () => {
