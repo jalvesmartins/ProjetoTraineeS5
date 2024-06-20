@@ -104,4 +104,16 @@ describe('ArtistService', () => {
     });
   });
 
+  describe('delete', () => {
+    test('deveria deletar um artista por id', async () => {
+        const artist = { id: 1, name: 'Artist Name', photo: 'url/to/photo', stream: 1000 };
+
+        prismaMock.artist.findUnique.mockResolvedValue(artist);
+        prismaMock.artist.delete.mockResolvedValue(artist);
+  
+        await expect(artistService.delete(1)).resolves.toEqual(artist);       
+    });
+
+
+  });
 });
