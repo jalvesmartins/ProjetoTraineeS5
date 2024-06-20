@@ -86,9 +86,13 @@ describe('ArtistService', () => {
         prismaMock.artist.findUnique.mockResolvedValue(artist);
         prismaMock.artist.update.mockResolvedValue(artist);
 
-        await expect(artistService.update(1, {name: 'Updated Artist',  photo: 'url/to/updated/photo'}))
-                .resolves.toEqual(artist)
-    })
-  })
+        await expect(artistService.update(1, {name: 'Updated Artist',  photo: 'url/to/updated/photo'})).resolves.toEqual(artist)
+    });
+
+    test('deveria lançar InvalidParamError se o id não for fornecido', async () => {
+        await expect(artistService.update(null as any, { name: 'Updated Artist' })).rejects.toThrow(InvalidParamError);
+      });
+
+  });
 
 });
