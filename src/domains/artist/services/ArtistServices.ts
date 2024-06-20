@@ -20,7 +20,7 @@ class ArtistService {
         })
 
         if(!artist){
-            throw new QueryError("Erro ao criar artista");
+            throw new InvalidParamError("Erro ao criar artista");
         }
         return artist;
     }
