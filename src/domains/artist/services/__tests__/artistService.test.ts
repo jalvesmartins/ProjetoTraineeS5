@@ -93,6 +93,11 @@ describe('ArtistService', () => {
         await expect(artistService.update(null as any, { name: 'Updated Artist' })).rejects.toThrow(InvalidParamError);
       });
 
+    test('deveria lançar QueryError se o artista não for encontrado ao atualizar', async () => {
+        prismaMock.artist.findUnique.mockResolvedValue(null);
+        await expect(artistService.update(1, {name: 'New Artists Name'})).rejects.toThrow(QueryError);
+    });
+    
   });
 
 });
