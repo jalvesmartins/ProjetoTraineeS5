@@ -28,16 +28,16 @@ class ArtistService {
     //Retorna todos os artistas
     async readAll() {
         const artists = await prisma.artist.findMany({
-            orderBy: {
-                name: 'asc'
-            }
+          orderBy: {
+            name: 'asc'
+          }
         });
-
-        if(!artists){
-            throw new QueryError("Nenhum artista encontrado");
+    
+        if (!artists || artists.length === 0) {
+          throw new QueryError("Nenhum artista encontrado");
         }
         return artists;
-    }
+      }
 
     //Retorna um artista pelo ID
     async readById(id: number) {
