@@ -114,9 +114,15 @@ describe('ArtistService', () => {
         await expect(artistService.delete(1)).resolves.toEqual(artist);       
     });
 
-    test('should throw InvalidParamError if id is not provided', async () => {
+    test('deveria lançar invalidParamError caso não receba um id', async () => {
         await expect(artistService.delete(null as any)).rejects.toThrow(InvalidParamError);
       });
+
+    test('deveria lançar QueryError caso o artista não seja achado', async () => {
+    prismaMock.artist.findUnique.mockResolvedValue(null);
+
+    await expect(artistService.delete(1)).rejects.toThrow(QueryError);
+    });
 
   });
 });
