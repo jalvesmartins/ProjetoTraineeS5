@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.8'
 
 services:
   api:
@@ -10,9 +10,9 @@ services:
       - "3030:3030"
     volumes:
       - .:/app
-    command: npx prisma migrate deploy && npm start
     depends_on:
       - mysql
+    command: npx prisma migrate deploy && npm start
     env_file:
       - ./.env
     networks:
@@ -22,10 +22,13 @@ services:
     image: mysql:8.0
     container_name: mysql
     ports:
-      - "${PORT_DB}:${PORT_DB}"
+      - "3306:3306"
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    command: --default-authentication-plugin=caching_sha2_password
     volumes:
       - db_data:/var/lib/mysql
     networks:

@@ -1,5 +1,5 @@
 import { Artist } from '@prisma/client';
-import prisma from '../../../../config/prismaClient'
+import prisma from '../../../../config/client'
 import { QueryError } from '../../../../errors/QueryError';
 import { InvalidParamError } from '../../../../errors/InvalidParamError';
     

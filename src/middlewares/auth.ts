@@ -1,4 +1,4 @@
-import prisma from '../../config/prismaClient'
+import prisma from '../../config/client'
 import { User } from '@prisma/client';
 import { Request, Response, NextFunction } from 'express';
 import { PermissionError } from '../../errors/PermissionError';
