@@ -67,7 +67,12 @@ describe('ArtistService', () => {
 
         prismaMock.artist.findUnique.mockResolvedValue(artist);
         await expect(artistService.readById(1)).resolves.toEqual(artist);
-    })
+    });
+
+    test('deveria lançar InvalidParamError se o id não for passado', async () => {
+        await expect(artistService.readById(null as any)).rejects.toThrow(InvalidParamError);
+      });
+
   });
 
 });
