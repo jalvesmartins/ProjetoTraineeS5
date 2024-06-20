@@ -58,35 +58,46 @@ class ArtistService {
 
     //Atualiza um artista pelo ID
     async update(id: number, body: Partial<Artist>) {
-        if(!id){
-            throw new InvalidParamError("É necessário informar um ID");
+        if (!id) {
+          throw new InvalidParamError("É necessário informar um ID");
         }
-
+    
+        // Adicionando validações para os tipos dos dados de atualização
+        if (body.name && typeof body.name !== 'string') {
+          throw new InvalidParamError("O nome deve ser uma string");
+        }
+        if (body.photo && typeof body.photo !== 'string') {
+          throw new InvalidParamError("A foto deve ser uma string");
+        }
+        if (body.stream && typeof body.stream !== 'number') {
+          throw new InvalidParamError("O stream deve ser um número");
+        }
+    
         const updateData = {
-            ...(body.name && { name: body.name }),
-            ...(body.photo && { photo: body.photo }),
-            ...(body.stream && { stream: body.stream })
+          ...(body.name && { name: body.name }),
+          ...(body.photo && { photo: body.photo }),
+          ...(body.stream && { stream: body.stream })
         };
-        
+    
         const checkArtist = await prisma.artist.findUnique({
-            where: {id: id}
+          where: { id: id }
         });
-
-        if(!checkArtist){
-            throw new QueryError("Artista não encontrado");
+    
+        if (!checkArtist) {
+          throw new QueryError("Artista não encontrado");
         }
-
+    
         if (Object.keys(updateData).length === 0) {
-            throw new InvalidParamError("Nenhuma atualização foi fornecida");
-        }        
-
+          throw new InvalidParamError("Nenhuma atualização foi fornecida");
+        }
+    
         const updatedArtist = await prisma.artist.update({
-            where: { id: id },
-            data: updateData
+          where: { id: id },
+          data: updateData
         });
-     
+    
         return updatedArtist;
-    }    
+      }  
 
     //Deleta um artista pelo ID
     async delete(id: number) {
