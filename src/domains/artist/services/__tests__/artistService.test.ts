@@ -34,5 +34,14 @@ describe('ArtistService', () => {
         await expect(artistService.create(artist as any)).rejects.toThrow(InvalidParamError);
     });
 
+    test('deveria lançar InvalidParamError se a foto estiver faltando', async () => {
+        const artist = {
+            id:1,
+            name:'Artist Name',
+            photo:'',
+            stream:1000
+        }
+        await expect(artistService.create(artist as any)).rejects.toThrow(InvalidParamError);
+    });
   });
 });
