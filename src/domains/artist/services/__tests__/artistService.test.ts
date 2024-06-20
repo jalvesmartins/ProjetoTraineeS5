@@ -79,4 +79,16 @@ describe('ArtistService', () => {
     });
   });
 
+  describe('update', () => {
+    test('deveria atualizar um artista pelo id', async () => {
+        const artist = {id: 1, name: 'Updated Artist', photo: 'url/to/updated/photo', stream: 1500};
+
+        prismaMock.artist.findUnique.mockResolvedValue(artist);
+        prismaMock.artist.update.mockResolvedValue(artist);
+
+        await expect(artistService.update(1, {name: 'Updated Artist',  photo: 'url/to/updated/photo'}))
+                .resolves.toEqual(artist)
+    })
+  })
+
 });
