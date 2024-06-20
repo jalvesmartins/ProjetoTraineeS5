@@ -114,6 +114,9 @@ describe('ArtistService', () => {
         await expect(artistService.delete(1)).resolves.toEqual(artist);       
     });
 
+    test('should throw InvalidParamError if id is not provided', async () => {
+        await expect(artistService.delete(null as any)).rejects.toThrow(InvalidParamError);
+      });
 
   });
 });
