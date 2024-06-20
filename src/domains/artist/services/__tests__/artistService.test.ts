@@ -55,6 +55,11 @@ describe('ArtistService', () => {
         await expect(artistService.readAll()).resolves.toEqual(artists);
     })
 
+    test('deveria lançar QueryError se não achar nenhum artista',async () => {
+        prismaMock.artist.findMany.mockResolvedValue([]);
+        await expect(artistService.readAll()).rejects.toThrow(QueryError);
+    })
+
   });
 
 });
