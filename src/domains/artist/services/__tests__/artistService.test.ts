@@ -58,8 +58,16 @@ describe('ArtistService', () => {
     test('deveria lançar QueryError se não achar nenhum artista',async () => {
         prismaMock.artist.findMany.mockResolvedValue([]);
         await expect(artistService.readAll()).rejects.toThrow(QueryError);
-    })
+    });
+  });
 
+  describe('readById', () => {
+    test('deveria retornar um artista por id', async() => {
+        const artist = {id: 1, name: 'Artist Name', photo: 'url-photo', stream: 1000};
+
+        prismaMock.artist.findUnique.mockResolvedValue(artist);
+        await expect(artistService.readById(1)).resolves.toEqual(artist);
+    })
   });
 
 });
