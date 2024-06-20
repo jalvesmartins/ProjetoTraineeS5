@@ -47,7 +47,7 @@ describe('ArtistService', () => {
     test('deveria lançar InvalidParamError se algum dado for inválido', async () => {
         const invalidArtist = {
           id: 1,
-          name: 12345, 
+          name: 12345, //Nome só pode ser string 
           photo: 'url-photo',
           stream: 1000
         };
@@ -112,6 +112,19 @@ describe('ArtistService', () => {
         prismaMock.artist.findUnique.mockResolvedValue({ id: 1, name: 'Artist Name', photo: 'url/to/photo', stream: 1000 });
         await expect(artistService.update(1, {})).rejects.toThrow(InvalidParamError);
     });
+
+    test('deveria lançar InvalidParamError se os dados de atualização forem inválidos', async () => {
+        const invalidUpdate = {
+          name: 12345, 
+          photo: 'url-photo',
+          stream: '1000', //Stream deve ser um número 
+        };
+    
+        prismaMock.artist.findUnique.mockResolvedValue({ id: 1, name: 'Artist Name', photo: 'url/to/photo', stream: 1000 });
+    
+        await expect(artistService.update(1, invalidUpdate as any)).rejects.toThrow(InvalidParamError);
+      });
+    
   });
 
   describe('delete', () => {
