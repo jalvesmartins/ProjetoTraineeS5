@@ -163,6 +163,29 @@ describe('update', () => {
       await expect(UserService.update(1, invalidUser)).rejects.toThrow(InvalidParamError);
     });
   });
+
+  describe('delete', () => {
+    test('ID válido fornecido ==> deleta o user', async () => {
+        const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' };
+
+      prismaMock.user.findUnique.mockResolvedValue(user);
+      prismaMock.user.delete.mockResolvedValue(user);
+
+      await expect(UserService.delete(1)).resolves.toEqual(user);
+    });
+
+    test('ID não fornecido ==> lança InvalidParamError', async () => {
+      await expect(UserService.delete(null as any)).rejects.toThrow(InvalidParamError);
+    });
+
+    test('user não encontrado ==> lança QueryError', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+
+      await expect(UserService.delete(1)).rejects.toThrow(QueryError);
+    });
+  });
+
+  
     
 
             
