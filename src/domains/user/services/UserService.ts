@@ -1,5 +1,5 @@
 import { User } from '.prisma/client';
-import prisma from '../../../../config/prismaClient'
+import prisma from '../../../../config/client'
 import { InvalidParamError } from '../../../../errors/InvalidParamError';
 import { QueryError } from '../../../../errors/QueryError';
 import bcrypt from "bcrypt";

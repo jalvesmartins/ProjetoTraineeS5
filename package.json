@@ -4,8 +4,8 @@
   "description": "Projeto que utuiliza CRUD e Prisma, do grupo 1 dos trainees da Ijuior. \r Nesse projeto faremos uma database de um serviço de streamimg, que contém as funções CRUD.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsnd --respawn --transpile-only --exit-child=true --rs index.ts"
+    "start": "tsnd --respawn --transpile-only --exit-child=true --rs index.ts",
+    "test": "jest --verbose"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +15,14 @@
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.12.12",
     "@typescript-eslint/eslint-plugin": "^7.11.0",
     "@typescript-eslint/parser": "^7.11.0",
     "globals": "^15.3.0",
+    "jest": "^29.7.0",
+    "jest-mock-extended": "^3.0.7",
+    "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5",
