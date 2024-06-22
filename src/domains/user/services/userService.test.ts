@@ -61,7 +61,7 @@ describe('UserService', () => {
             await expect(UserService.create(invalidUser as any)).rejects.toThrow(InvalidParamError);
             };
 
-            test('tenta criar com senha <6 digitos ==> lança invalid param error'), async () => {
+          test('tenta criar com senha <6 digitos ==> lança invalid param error'), async () => {
                 const invalidUser = {
                   id: 1,
                   name: 'Joao',
@@ -141,7 +141,6 @@ describe('update', () => {
             name: 1234, //Deveria ser uma string
             email: 'email@.com',
             photo: null,
-            password: 'encrypted',
             role: 'user'
           };
 
@@ -155,7 +154,6 @@ describe('update', () => {
             name: 'Joao',
             email: 'email@.com',
             photo: null,
-            password: 'encrypted',
             role: 'admin'
           };
 
@@ -182,6 +180,62 @@ describe('update', () => {
       prismaMock.user.findUnique.mockResolvedValue(null);
 
       await expect(UserService.delete(1)).rejects.toThrow(QueryError);
+    });
+  });
+
+  describe('updateRole', () => {
+    test('dados válidos fornecidos ==> atualiza o role', async () => {
+        const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' };
+      prismaMock.user.findUnique.mockResolvedValue(user);
+      prismaMock.user.update.mockResolvedValue(user);
+      await expect(UserService.updateRole(1, { role: 'admin' })).resolves.toEqual(user);
+    });
+
+    test('ID não fornecido ==> lança InvalidParamError', async () => {
+      await expect(UserService.updateRole(null as any, { role: 'admin' })).rejects.toThrow(InvalidParamError);
+    });
+
+    test('user não encontrado ==> lança QueryError', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      await expect(UserService.updateRole(1, { name: 'Joao' })).rejects.toThrow(QueryError);
+    });
+
+    test('nenhuma atualização fornecida ==> lança InvalidParamError', async () => {
+      prismaMock.user.findUnique.mockResolvedValue({ id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' });
+      await expect(UserService.update(1, {})).rejects.toThrow(InvalidParamError);
+    });
+
+    test('dados de atualização inválidos fornecidos ==> lança InvalidParamError', async () => {
+      prismaMock.user.findUnique.mockResolvedValue({ id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' });
+      await expect(UserService.update(1, {role:'idkidk'})).rejects.toThrow(InvalidParamError);
+    });
+  });
+
+  describe('updatePassword', () => {
+    test('dados válidos fornecidos ==> atualiza a senha', async () => {
+        const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' };
+      prismaMock.user.findUnique.mockResolvedValue(user);
+      prismaMock.user.update.mockResolvedValue(user);
+      await expect(UserService.updatePassword(1, { password: 'admin123' })).resolves.toEqual(user);
+    });
+
+    test('ID não fornecido ==> lança InvalidParamError', async () => {
+      await expect(UserService.updatePassword(null as any, { password: 'admin123' })).rejects.toThrow(InvalidParamError);
+    });
+
+    test('user não encontrado ==> lança QueryError', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      await expect(UserService.updatePassword(1, { password: 'Joao123' })).rejects.toThrow(QueryError);
+    });
+
+    test('nenhuma atualização fornecida ==> lança InvalidParamError', async () => {
+      prismaMock.user.findUnique.mockResolvedValue({ id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' });
+      await expect(UserService.update(1, {})).rejects.toThrow(InvalidParamError);
+    });
+
+    test('tenta atualizar senha <6 ==> lança InvalidParamError', async () => {
+      prismaMock.user.findUnique.mockResolvedValue({ id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' });
+      await expect(UserService.update(1, {password:'senha'})).rejects.toThrow(InvalidParamError);
     });
   });
 
