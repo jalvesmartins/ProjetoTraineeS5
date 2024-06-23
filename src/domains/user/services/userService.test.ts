@@ -239,14 +239,87 @@ describe('update', () => {
     });
   });
 
-  
-    
+  describe('addMusicToUser', () => {
+    test('tenta adicionar uma música corretamente ==> adiciona música', async () => {
+      const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' };
+      const music = { id: 1,  name: 'One Dance', genre:'pop', album: 'body.album', authorId: 1}
+      prismaMock.user.findUnique.mockResolvedValue(user);
+      prismaMock.music.findUnique.mockResolvedValue(music);
 
-            
+      await expect(UserService.addMusicToUser(1,1)).resolves.toEqual(user);
+    });
 
+    test('tenta adicionar uma música com dados inválidos ==> lança invalid params error', async () => {
+      const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' };
+      const music = { id: 1,  name: 'One Dance', genre:'pop', album: 'body.album', authorId: 1};
+      prismaMock.user.findUnique.mockResolvedValue(user);
+      prismaMock.music.findUnique.mockResolvedValue(music);
 
+      await expect(UserService.addMusicToUser(null as any, 1)).rejects.toThrow(InvalidParamError);    
+    });
 
+    test('Música não existe ==> lança querry error', async () => {
+      const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' };
+      prismaMock.user.findUnique.mockResolvedValue(user);
+      prismaMock.music.findUnique.mockResolvedValue(null);
 
+      await expect(UserService.addMusicToUser(1, 1)).rejects.toThrow(QueryError);    
+    });
 
+    test('Usuário não existe ==> lança querry error', async () => {
+      const music = { id: 1,  name: 'One Dance', genre:'pop', album: 'body.album', authorId: 1}
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      prismaMock.music.findUnique.mockResolvedValue(music);
 
+      await expect(UserService.addMusicToUser(1, 1)).rejects.toThrow(QueryError);    
+    });
+  });
+
+  describe('removeMusicFromUser', () => {
+    test('tenta remover uma música corretamente ==> remove música', async () => {
+      const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user', musics:[{ id: 1,  name: 'One Dance', genre:'pop', album: 'body.album', authorId: 1}] };
+      prismaMock.user.findUnique.mockResolvedValue(user);
+
+      await expect(UserService.removeMusicFromUser(1,1)).resolves.toEqual(user);
+    });
+
+    test('tenta remover uma música com dados inválidos ==> lança invalid params error', async () => {
+      const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user', musics:[{ id: 1,  name: 'One Dance', genre:'pop', album: 'body.album', authorId: 1}] };      
+      prismaMock.user.findUnique.mockResolvedValue(user);
+
+      await expect(UserService.removeMusicFromUser(null as any, 1)).rejects.toThrow(InvalidParamError);    
+    });
+
+    test('Usuário não existe ==> lança querry error', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      await expect(UserService.removeMusicFromUser(1, 1)).rejects.toThrow(QueryError);    
+    });
+
+    test('Música não existe no usuário ==> lança querry error', async () => {
+      const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user'};
+      prismaMock.user.findUnique.mockResolvedValue(user);
+
+      await expect(UserService.removeMusicFromUser(1, 1)).rejects.toThrow(QueryError);    
+    });
+  });
+
+  describe('musicsListenByUser', () => {
+    test('tenta listar as músicas corretamente ==> lista as músicas', async () => {
+      const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user', musics:[{ id: 1,  name: 'One Dance', genre:'pop', album: 'body.album', authorId: 1}] };      
+      prismaMock.user.findUnique.mockResolvedValue(user);
+      await expect(UserService.musicsListenByUser(1)).resolves.toEqual(user.musics);
+    });
+
+    test('tenta listar músicas com dados inválidos ==> lança invalid params error', async () => {
+      const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user', musics:[{ id: 1,  name: 'One Dance', genre:'pop', album: 'body.album', authorId: 1}] };      
+      prismaMock.user.findUnique.mockResolvedValue(user);
+
+      await expect(UserService.musicsListenByUser(null as any)).rejects.toThrow(InvalidParamError);    
+    });
+
+    test('Usuário não existe ==> lança querry error', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      await expect(UserService.musicsListenByUser(1)).rejects.toThrow(QueryError);    
+    });
+  });
 });
