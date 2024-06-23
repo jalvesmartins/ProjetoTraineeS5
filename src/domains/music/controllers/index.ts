@@ -8,6 +8,19 @@ const router = Router();
 // Instância do MusicService
 const musicService = new MusicService();
 
+// Cria uma nova música
+router.post("/create", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+        checkRole(req, res, next, ['admin']);
+    },
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const createMusic = await musicService.create(req.body);
+            res.status(statusCodes.CREATED).json(createMusic);
+        } catch (error) {
+            next(error);
+        }
+    });
+
 // Lista todas as músicas
 router.get("/", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
         checkRole(req, res, next, ['user','admin']);
@@ -37,18 +50,6 @@ router.get("/:id", verifyJWT, async (req: Request, res: Response, next: NextFunc
         }
     });
 
-// Cria uma nova música
-router.post("/create", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
-        checkRole(req, res, next, ['admin']);
-    },
-    async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const createMusic = await musicService.create(req.body);
-            res.status(statusCodes.CREATED).json(createMusic);
-        } catch (error) {
-            next(error);
-        }
-    });
 
 // Atualiza uma música pelo ID
 router.put("/update/:id", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
