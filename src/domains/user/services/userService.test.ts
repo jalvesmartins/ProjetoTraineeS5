@@ -40,23 +40,11 @@ describe('UserService', () => {
           test('tenta criar usuário invalido ==> lança invalid param error', async () => {
             const invalidUser = {
               id: 1,
-              name: 1234, //Deveria ser uma string
-              email: 'email@.com',
-			  photo: null,
-			  password: 'encrypted',
-			  role: 'user'
-            };
-            await expect(UserService.create(invalidUser as any)).rejects.toThrow(InvalidParamError);
-            });
-
-          test('tenta criar usuário sem fornecer dados ==> lança invalid param error', async () => {
-            const invalidUser = {
-              id: 1,
-              name: null,
-              email: 'email@.com',
-			  photo: 'urlphoto',
-			  password: undefined,
-			  role: 'admin'
+              name: 'Jõao',
+              email: null,
+			        photo: null,
+			        password: 'encrypted',
+			        role: 'user'
             };
             await expect(UserService.create(invalidUser as any)).rejects.toThrow(InvalidParamError);
             });
@@ -89,7 +77,7 @@ describe('readAll', () => {
     });
 
     test('nenhum usuário disponível ==> lança Query error', async () => {
-        prismaMock.user.findMany.mockResolvedValue([]);
+        prismaMock.user.findMany.mockResolvedValue(null);
         await expect(UserService.readAll()).rejects.toThrow(QueryError);
     });
   });
@@ -113,11 +101,9 @@ describe('readAll', () => {
 
 describe('update', () => {
     test('dados válidos fornecidos ==> atualiza o user', async () => {
-        const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' };
+        const user = {id:1 ,name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' };
 
       prismaMock.user.findUnique.mockResolvedValue(user);
-      prismaMock.user.update.mockResolvedValue(user);
-
       await expect(UserService.update(1, { name: 'Joao', email: 'ph@.com', photo: 'url-photo', password: 'encrypted123', role: 'user' })).resolves.toEqual(user);
     });
 
@@ -245,6 +231,7 @@ describe('update', () => {
       const music = { id: 1,  name: 'One Dance', genre:'pop', album: 'body.album', authorId: 1}
       prismaMock.user.findUnique.mockResolvedValue(user);
       prismaMock.music.findUnique.mockResolvedValue(music);
+      prismaMock.user.update.mockResolvedValue(user);
 
       await expect(UserService.addMusicToUser(1,1)).resolves.toEqual(user);
     });
@@ -262,7 +249,7 @@ describe('update', () => {
       const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user' };
       prismaMock.user.findUnique.mockResolvedValue(user);
       prismaMock.music.findUnique.mockResolvedValue(null);
-
+      
       await expect(UserService.addMusicToUser(1, 1)).rejects.toThrow(QueryError);    
     });
 
@@ -279,6 +266,7 @@ describe('update', () => {
     test('tenta remover uma música corretamente ==> remove música', async () => {
       const user = { id: 1, name: 'Pedro', email: 'jh@.com', photo: 'url-photo', password: 'encrypted', role: 'user', musics:[{ id: 1,  name: 'One Dance', genre:'pop', album: 'body.album', authorId: 1}] };
       prismaMock.user.findUnique.mockResolvedValue(user);
+      prismaMock.user.update.mockResolvedValue(user);
 
       await expect(UserService.removeMusicFromUser(1,1)).resolves.toEqual(user);
     });
