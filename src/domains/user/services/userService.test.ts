@@ -25,7 +25,7 @@ describe('UserService', () => {
             await expect(UserService.create(user)).resolves.toEqual(user);
           });
 
-          test('tenta criar adm ==> lança invalid param error'), async () => {
+          test('tenta criar adm ==> lança invalid param error', async () => {
             const invalidUser = {
               id: 1,
               name: 'Joao',
@@ -35,9 +35,9 @@ describe('UserService', () => {
 			  role: 'admin'
             };
             await expect(UserService.create(invalidUser)).rejects.toThrow(InvalidParamError);
-            };
+            });
 
-          test('tenta criar usuário invalido ==> lança invalid param error'), async () => {
+          test('tenta criar usuário invalido ==> lança invalid param error', async () => {
             const invalidUser = {
               id: 1,
               name: 1234, //Deveria ser uma string
@@ -47,9 +47,9 @@ describe('UserService', () => {
 			  role: 'user'
             };
             await expect(UserService.create(invalidUser as any)).rejects.toThrow(InvalidParamError);
-            };
+            });
 
-          test('tenta criar usuário sem fornecer dados ==> lança invalid param error'), async () => {
+          test('tenta criar usuário sem fornecer dados ==> lança invalid param error', async () => {
             const invalidUser = {
               id: 1,
               name: null,
@@ -59,9 +59,9 @@ describe('UserService', () => {
 			  role: 'admin'
             };
             await expect(UserService.create(invalidUser as any)).rejects.toThrow(InvalidParamError);
-            };
+            });
 
-          test('tenta criar com senha <6 digitos ==> lança invalid param error'), async () => {
+          test('tenta criar com senha <6 digitos ==> lança invalid param error', async () => {
                 const invalidUser = {
                   id: 1,
                   name: 'Joao',
@@ -71,7 +71,7 @@ describe('UserService', () => {
                   role: 'admin'
                 };
                 await expect(UserService.create(invalidUser)).rejects.toThrow(InvalidParamError);
-                };
+                });
 });
 
 describe('readAll', () => {
