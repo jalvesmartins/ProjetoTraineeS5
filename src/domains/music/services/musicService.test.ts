@@ -91,7 +91,7 @@ describe('MusicService', () => {
             await expect(musicService.readById(1)).rejects.toThrow(QueryError);
         });
         test('erro no banco de dados ==> lança QueryError', async () => {
-            prismaMock.music.findUnique.mockRejectedValue(new Error('Database connection error'));
+            prismaMock.music.findUnique.mockRejectedValue(new QueryError('Database connection error'));
             await expect(musicService.readById(1)).rejects.toThrow(QueryError);
         });
     });
@@ -143,6 +143,32 @@ describe('MusicService', () => {
         test('música não encontrada ==> lança QueryError', async () => {
             prismaMock.music.findUnique.mockResolvedValue(null);
             await expect(musicService.delete(1)).rejects.toThrow(QueryError);
+        });
+    });
+
+    describe('userWhoListenedMusic', () => {
+        test('ID de música válido fornecido ==> retorna os usuários que ouviram a música', async () => {
+            const musicID = 1;
+            const users = [
+                { id: 1, name: 'User One', email: 'user1@example.com', photo: null, password: 'password1', role: 'user' },
+                { id: 2, name: 'User Two', email: 'user2@example.com', photo: null, password: 'password2', role: 'user' },
+            ];
+
+            prismaMock.user.findMany.mockResolvedValue(users);
+            await expect(musicService.userWhoListenedMusic(musicID)).resolves.toEqual(users);
+        });
+        test('ID não fornecido ==> lança InvalidParamError', async () => {
+            await expect(musicService.userWhoListenedMusic(null as any)).rejects.toThrow(InvalidParamError);
+        });
+        test('nenhum usuário encontrado ==> lança QueryError', async () => {
+            const musicId = 1;
+            prismaMock.user.findMany.mockResolvedValue([]);
+            await expect(musicService.userWhoListenedMusic(musicId)).rejects.toThrow(QueryError);
+        });
+        test('erro no banco de dados ==> lança QueryError', async () => {
+            const musicId = 1;
+            prismaMock.user.findMany.mockRejectedValue(new QueryError('Database connection error'));
+            await expect(musicService.userWhoListenedMusic(musicId)).rejects.toThrow(QueryError);
         });
     });
 });
