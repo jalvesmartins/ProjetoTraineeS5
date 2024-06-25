@@ -9,9 +9,9 @@ services:
       - "3030:3030"
     volumes:
       - .:/app
-    command: sh -c "npx prisma migrate deploy && npm start"
     depends_on:
       - mysql
+    command: sh -c "npx prisma migrate deploy && npm start"
     env_file:
       - ./.env
     networks:
