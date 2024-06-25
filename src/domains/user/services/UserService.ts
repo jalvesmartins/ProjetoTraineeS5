@@ -247,29 +247,29 @@ class ServiceUser {
 		return updatedUser;
 	}
         
-	//Remove uma música de um usuário 
+	// Remove uma música de um usuário 
 	async removeMusicFromUser(userId: number, musicId: number) {
-		if(!userId){
+		if (!userId) {
 			throw new InvalidParamError("Informe um Id de usuário");
 		}
-		if(!musicId){
+		if (!musicId) {
 			throw new InvalidParamError("Informe um Id de música");
 		}
-		const checkUser = await prisma.user.findUnique({
-			where: {
-				id: userId
-			}
+		const user = await prisma.user.findUnique({
+			where: { id: userId },
+			include: { musics: true },
 		});
-		if(!checkUser){
+		if (!user) {
 			throw new QueryError("Usuário inválido e/ou inexistente");
 		}
-		const checkMusic = await prisma.music.findUnique({
-			where: {
-				id: musicId
-			}
+		const music = await prisma.music.findUnique({
+			where: { id: musicId },
 		});
-		if(!checkMusic){
+		if (!music) {
 			throw new QueryError("Música inválida e/ou inexistente");
+		}
+		if (!user.musics.some(m => m.id === musicId)) {
+			throw new InvalidParamError("A música não está marcada como ouvida");
 		}
 		const updatedUser = await prisma.user.update({
 			where: { id: userId },
