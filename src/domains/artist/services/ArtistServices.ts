@@ -106,25 +106,25 @@ class ArtistService {
       }  
 
     //Deleta um artista pelo ID
-    async delete(id: number) {
-        if(!id){
-            throw new InvalidParamError("É necessário informar um ID");
-        }
+    async delete(artistId: number) {
+      if (!artistId) {
+          throw new InvalidParamError('ID do artista é obrigatório');
+      }
 
-        const checkArtist = await prisma.artist.findUnique({
-            where: {id: id}
-        });
+      const artist = await prisma.artist.findUnique({
+          where: { id: artistId },
+      });
 
-        if(!checkArtist){
-            throw new QueryError("Artista não encontrado");
-        }
+      if (!artist) {
+          throw new QueryError('Artista não encontrado');
+      }
 
-        const artist = await prisma.artist.delete({
-            where: { id: id }
-        });
+      await prisma.artist.delete({
+          where: { id: artistId },
+      });
 
-        return artist;
-    }
+      return artist;
+  }
 } 
 
 export default ArtistService;
