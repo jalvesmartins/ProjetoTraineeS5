@@ -8,7 +8,8 @@ services:
     ports:
       - "3030:3030"
     volumes:
-      - .:/app
+      - .:/api
+      - /api/node_modules
     depends_on:
       - mysql
     command: sh -c "npx prisma migrate deploy && npm start"
