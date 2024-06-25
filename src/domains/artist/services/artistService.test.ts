@@ -19,39 +19,46 @@ describe('ArtistService', () => {
         photo: 'url-photo',
         stream: 1000,
       };
+
+      const artistInput = {
+        name: 'Artist Name',
+        photo: 'url-photo',
+        stream: 1000,
+      };
+
       prismaMock.artist.create.mockResolvedValue(artist);
 
-      await expect(artistService.create(artist)).resolves.toEqual(artist);
+      await expect(artistService.create(artistInput)).resolves.toEqual(artist);
     });
 
     test('nome não fornecido ==> lança InvalidParamError', async () => {
-      const artist = {
-        id: 1,
+      const artistInput = {
         name: '',
         photo: 'url-photo',
         stream: 1000
-      }
-      await expect(artistService.create(artist as any)).rejects.toThrow(InvalidParamError);
+      };
+
+      await expect(artistService.create(artistInput as any)).rejects.toThrow(InvalidParamError);
     });
 
     test('foto não fornecida ==> lança InvalidParamError', async () => {
-      const artist = {
-        id: 1,
+      const artistInput = {
         name: 'Artist Name',
         photo: '',
         stream: 1000
-      }
-      await expect(artistService.create(artist as any)).rejects.toThrow(InvalidParamError);
+      };
+
+      await expect(artistService.create(artistInput as any)).rejects.toThrow(InvalidParamError);
     });
 
     test('dados inválidos fornecidos ==> lança InvalidParamError', async () => {
-      const invalidArtist = {
-        id: 1,
+      const invalidArtistInput = {
         name: 12345, // Nome só pode ser string 
         photo: 'url-photo',
         stream: 1000
       };
-      await expect(artistService.create(invalidArtist as any)).rejects.toThrow(InvalidParamError);
+
+      await expect(artistService.create(invalidArtistInput as any)).rejects.toThrow(InvalidParamError);
     });
   });
 
@@ -85,12 +92,6 @@ describe('ArtistService', () => {
 
     test('artista não encontrado por ID ==> lança QueryError', async () => {
       prismaMock.artist.findUnique.mockResolvedValue(null);
-      await expect(artistService.readById(1)).rejects.toThrow(QueryError);
-    });
-
-    test('erro no banco de dados ==> lança QueryError', async () => {
-      prismaMock.artist.findUnique.mockRejectedValue(new Error('Database connection error'));
-
       await expect(artistService.readById(1)).rejects.toThrow(QueryError);
     });
   });

@@ -5,25 +5,31 @@ import { InvalidParamError } from '../../../../errors/InvalidParamError';
     
 class ArtistService {
     //Cria um novo artista
-    async create(body: Artist) {
-        if (!body.name || !body.photo) {
-            throw new InvalidParamError('Nome e foto são obrigatórios');
-        }
+    async create(body: { name: string; photo: string; stream?: number }) {
+      if (!body.name || !body.photo) {
+          throw new InvalidParamError('Nome e foto são obrigatórios');
+      }
 
-        const artist = await prisma.artist.create({
-            data: {
-                id: body.id,
-                name: body.name,
-                photo: body.photo,
-                stream: body.stream
-            }
-        })
+      // Construa o objeto `data` condicionalmente
+      const data: any = {
+          name: body.name,
+          photo: body.photo,
+      };
+      
+      if (body.stream !== undefined) {
+          data.stream = body.stream;
+      }
 
-        if(!artist){
-            throw new InvalidParamError("Erro ao criar artista");
-        }
-        return artist;
-    }
+      const artist = await prisma.artist.create({
+          data: data
+      });
+
+      if (!artist) {
+          throw new InvalidParamError("Erro ao criar artista");
+      }
+
+      return artist;
+  }
 
     //Retorna todos os artistas
     async readAll() {
