@@ -51,7 +51,7 @@ class ServiceUser {
 				name:"asc"
 			}
 		});
-		if(!readUser){
+		if(!readUser || readUser.length === 0){
 			throw new QueryError("Nenhum usuário cadastrado");
 		}
 		return readUser;
@@ -85,7 +85,7 @@ class ServiceUser {
 			}
 		});
 		if(!checkUser){
-			throw new InvalidParamError("Id de usuário inexistente e/ou inválido");
+			throw new QueryError("Id de usuário inexistente e/ou inválido");
 		}
 		const updateData = {
 			...(body.name && { name: body.name }),
@@ -129,7 +129,7 @@ class ServiceUser {
 			}
 		});
 		if(!checkUser){
-			throw new InvalidParamError("Id de usuário inexistente e/ou inválido");
+			throw new QueryError("Id de usuário inexistente e/ou inválido");
 		}
 		const updateData = {
 			...(body.role && { role: body.role }),
@@ -164,7 +164,7 @@ class ServiceUser {
 			}
 		});
 		if(!checkUser){
-			throw new InvalidParamError("Id de usuário inexistente e/ou inválido");
+			throw new QueryError("Id de usuário inexistente e/ou inválido");
 		}
 		const updateData = {
 			...(body.password && { password: body.password }),
