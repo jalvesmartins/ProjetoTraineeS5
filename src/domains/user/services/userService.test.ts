@@ -25,7 +25,7 @@ describe('UserService', () => {
             await expect(UserService.create(user)).resolves.toEqual(user);
           });
 
-          test('tenta criar adm ==> lança invalid param error'), async () => {
+          test('tenta criar adm ==> lança invalid param error', async () => {
             const invalidUser = {
               id: 1,
               name: 'Joao',
@@ -35,43 +35,57 @@ describe('UserService', () => {
 			  role: 'admin'
             };
             await expect(UserService.create(invalidUser)).rejects.toThrow(InvalidParamError);
-            };
+            });
 
-          test('tenta criar usuário invalido ==> lança invalid param error'), async () => {
+          test('tenta criar usuário invalido ==> lança invalid param error', async () => {
             const invalidUser = {
               id: 1,
               name: 1234, //Deveria ser uma string
               email: 'email@.com',
-			  photo: null,
-			  password: 'encrypted',
-			  role: 'user'
+              photo: null,
+              password: 'encrypted',
+              role: 'user'
             };
             await expect(UserService.create(invalidUser as any)).rejects.toThrow(InvalidParamError);
-            };
+            });
 
-          test('tenta criar usuário sem fornecer dados ==> lança invalid param error'), async () => {
-            const invalidUser = {
-              id: 1,
-              name: null,
-              email: 'email@.com',
-			  photo: 'urlphoto',
-			  password: undefined,
-			  role: 'admin'
-            };
-            await expect(UserService.create(invalidUser as any)).rejects.toThrow(InvalidParamError);
-            };
-
-          test('tenta criar com senha <6 digitos ==> lança invalid param error'), async () => {
+            test('tenta criar usuário sem fornecer dados ==> lança invalid param error', async () => {
                 const invalidUser = {
+                    id: 1,
+                    name: null,
+                    email: 'email@.com',
+                    photo: 'urlphoto',
+                    password: undefined,
+                    role: 'admin'
+                };
+                await expect(UserService.create(invalidUser as any)).rejects.toThrow(InvalidParamError);
+            });
+
+            test('tenta criar usuário sem fornecer dados ==> lança invalid param error', async () => {
+              const invalidUser = {
                   id: 1,
-                  name: 'Joao',
+                  name: null,
                   email: 'email@.com',
                   photo: 'urlphoto',
-                  password: 'encry',
+                  password: undefined,
                   role: 'admin'
-                };
-                await expect(UserService.create(invalidUser)).rejects.toThrow(InvalidParamError);
-                };
+              };
+              await expect(UserService.create(invalidUser as any)).rejects.toThrow(InvalidParamError);
+            });
+
+
+            test('tenta criar com senha <6 digitos ==> lança invalid param error', async () => {
+                  const invalidUser = {
+                    id: 1,
+                    name: 'Joao',
+                    email: 'email@.com',
+                    photo: 'urlphoto',
+                    password: 'encry',
+                    role: 'admin'
+                  };
+                  await expect(UserService.create(invalidUser)).rejects.toThrow(InvalidParamError);
+              });
+
 });
 
 describe('readAll', () => {
