@@ -6,150 +6,151 @@ import { mockReset } from "jest-mock-extended";
 
 const artistService = new ArtistService();
 
-describe('ArtistService', () => {
-  beforeEach(() => {
-    mockReset(prismaMock);
-  });
+describe("ArtistService", () => {
+	beforeEach(() => {
+		mockReset(prismaMock);
+	});
 
-  describe('create', () => {
-    test('dados válidos fornecidos ==> cria um novo artista', async () => {
-      const artist = {
-        id: 1,
-        name: 'Artist Name',
-        photo: 'url-photo',
-        stream: 1000,
-      };
-      prismaMock.artist.create.mockResolvedValue(artist);
+	describe("create", () => {
+		test("dados válidos fornecidos ==> cria um novo artista", async () => {
+			const artist = {
+				id: 1,
+				name: "Artist Name",
+				photo: "url-photo",
+				stream: 1000,
+			};
 
-      await expect(artistService.create(artist)).resolves.toEqual(artist);
-    });
+			const artistInput = {
+				name: "Artist Name",
+				photo: "url-photo",
+				stream: 1000,
+			};
 
-    test('nome não fornecido ==> lança InvalidParamError', async () => {
-      const artist = {
-        id: 1,
-        name: '',
-        photo: 'url-photo',
-        stream: 1000
-      }
-      await expect(artistService.create(artist as any)).rejects.toThrow(InvalidParamError);
-    });
+			prismaMock.artist.create.mockResolvedValue(artist);
 
-    test('foto não fornecida ==> lança InvalidParamError', async () => {
-      const artist = {
-        id: 1,
-        name: 'Artist Name',
-        photo: '',
-        stream: 1000
-      }
-      await expect(artistService.create(artist as any)).rejects.toThrow(InvalidParamError);
-    });
+			await expect(artistService.create(artistInput)).resolves.toEqual(artist);
+		});
 
-    test('dados inválidos fornecidos ==> lança InvalidParamError', async () => {
-      const invalidArtist = {
-        id: 1,
-        name: 12345, // Nome só pode ser string 
-        photo: 'url-photo',
-        stream: 1000
-      };
-      await expect(artistService.create(invalidArtist as any)).rejects.toThrow(InvalidParamError);
-    });
-  });
+		test("nome não fornecido ==> lança InvalidParamError", async () => {
+			const artistInput = {
+				name: "",
+				photo: "url-photo",
+				stream: 1000
+			};
 
-  describe('readAll', () => {
-    test('artistas disponíveis ==> retorna todos os artistas', async () => {
-      const artists = [
-        { id: 1, name: 'Artist One', photo: 'url/to/photo1', stream: 1000 },
-        { id: 2, name: 'Artist Two', photo: 'url/to/photo2', stream: 2000 },
-      ];
-      prismaMock.artist.findMany.mockResolvedValue(artists);
-      await expect(artistService.readAll()).resolves.toEqual(artists);
-    });
+			await expect(artistService.create(artistInput)).rejects.toThrow(InvalidParamError);
+		});
 
-    test('nenhum artista encontrado ==> lança QueryError', async () => {
-      prismaMock.artist.findMany.mockResolvedValue([]);
-      await expect(artistService.readAll()).rejects.toThrow(QueryError);
-    });
-  });
+		test("foto não fornecida ==> lança InvalidParamError", async () => {
+			const artistInput = {
+				name: "Artist Name",
+				photo: "",
+				stream: 1000
+			};
 
-  describe('readById', () => {
-    test('ID válido fornecido ==> retorna artista correspondente', async () => {
-      const artist = { id: 1, name: 'Artist Name', photo: 'url-photo', stream: 1000 };
+			await expect(artistService.create(artistInput)).rejects.toThrow(InvalidParamError);
+		});
 
-      prismaMock.artist.findUnique.mockResolvedValue(artist);
-      await expect(artistService.readById(1)).resolves.toEqual(artist);
-    });
+		test("dados inválidos fornecidos ==> lança InvalidParamError", async () => {
+			const invalidArtistInput = {
+				name: 12345 as unknown as string, // Nome só pode ser string 
+				photo: "url-photo",
+				stream: 1000
+			};
 
-    test('ID não fornecido ==> lança InvalidParamError', async () => {
-      await expect(artistService.readById(null as any)).rejects.toThrow(InvalidParamError);
-    });
+			await expect(artistService.create(invalidArtistInput)).rejects.toThrow(InvalidParamError);
+		});
+	});
 
-    test('artista não encontrado por ID ==> lança QueryError', async () => {
-      prismaMock.artist.findUnique.mockResolvedValue(null);
-      await expect(artistService.readById(1)).rejects.toThrow(QueryError);
-    });
+	describe("readAll", () => {
+		test("artistas disponíveis ==> retorna todos os artistas", async () => {
+			const artists = [
+				{ id: 1, name: "Artist One", photo: "url/to/photo1", stream: 1000 },
+				{ id: 2, name: "Artist Two", photo: "url/to/photo2", stream: 2000 },
+			];
+			prismaMock.artist.findMany.mockResolvedValue(artists);
+			await expect(artistService.readAll()).resolves.toEqual(artists);
+		});
 
-    test('erro no banco de dados ==> lança QueryError', async () => {
-      prismaMock.artist.findUnique.mockRejectedValue(new Error('Database connection error'));
+		test("nenhum artista encontrado ==> lança QueryError", async () => {
+			prismaMock.artist.findMany.mockResolvedValue([]);
+			await expect(artistService.readAll()).rejects.toThrow(QueryError);
+		});
+	});
 
-      await expect(artistService.readById(1)).rejects.toThrow(QueryError);
-    });
-  });
+	describe("readById", () => {
+		test("ID válido fornecido ==> retorna artista correspondente", async () => {
+			const artist = { id: 1, name: "Artist Name", photo: "url-photo", stream: 1000 };
 
-  describe('update', () => {
-    test('dados válidos fornecidos ==> atualiza o artista', async () => {
-      const artist = { id: 1, name: 'Updated Artist', photo: 'url/to/updated/photo', stream: 1500 };
+			prismaMock.artist.findUnique.mockResolvedValue(artist);
+			await expect(artistService.readById(1)).resolves.toEqual(artist);
+		});
 
-      prismaMock.artist.findUnique.mockResolvedValue(artist);
-      prismaMock.artist.update.mockResolvedValue(artist);
+		test("ID não fornecido ==> lança InvalidParamError", async () => {
+			await expect(artistService.readById(null as unknown as number)).rejects.toThrow(InvalidParamError);
+		});
 
-      await expect(artistService.update(1, { name: 'Updated Artist', photo: 'url/to/updated/photo' })).resolves.toEqual(artist);
-    });
+		test("artista não encontrado por ID ==> lança QueryError", async () => {
+			prismaMock.artist.findUnique.mockResolvedValue(null);
+			await expect(artistService.readById(1)).rejects.toThrow(QueryError);
+		});
+	});
 
-    test('ID não fornecido ==> lança InvalidParamError', async () => {
-      await expect(artistService.update(null as any, { name: 'Updated Artist' })).rejects.toThrow(InvalidParamError);
-    });
+	describe("update", () => {
+		test("dados válidos fornecidos ==> atualiza o artista", async () => {
+			const artist = { id: 1, name: "Updated Artist", photo: "url/to/updated/photo", stream: 1500 };
 
-    test('artista não encontrado ==> lança QueryError', async () => {
-      prismaMock.artist.findUnique.mockResolvedValue(null);
-      await expect(artistService.update(1, { name: 'New Artist Name' })).rejects.toThrow(QueryError);
-    });
+			prismaMock.artist.findUnique.mockResolvedValue(artist);
+			prismaMock.artist.update.mockResolvedValue(artist);
 
-    test('nenhuma atualização fornecida ==> lança InvalidParamError', async () => {
-      prismaMock.artist.findUnique.mockResolvedValue({ id: 1, name: 'Artist Name', photo: 'url/to/photo', stream: 1000 });
-      await expect(artistService.update(1, {})).rejects.toThrow(InvalidParamError);
-    });
+			await expect(artistService.update(1, { name: "Updated Artist", photo: "url/to/updated/photo" })).resolves.toEqual(artist);
+		});
 
-    test('dados de atualização inválidos fornecidos ==> lança InvalidParamError', async () => {
-      const invalidUpdate = {
-        name: 12345, // Nome deve ser string
-        photo: 'url-photo',
-        stream: '1000', // Stream deve ser número
-      };
+		test("ID não fornecido ==> lança InvalidParamError", async () => {
+			await expect(artistService.update(null as unknown as number, { name: "Updated Artist" })).rejects.toThrow(InvalidParamError);
+		});
 
-      prismaMock.artist.findUnique.mockResolvedValue({ id: 1, name: 'Artist Name', photo: 'url/to/photo', stream: 1000 });
+		test("artista não encontrado ==> lança QueryError", async () => {
+			prismaMock.artist.findUnique.mockResolvedValue(null);
+			await expect(artistService.update(1, { name: "New Artist Name" })).rejects.toThrow(QueryError);
+		});
 
-      await expect(artistService.update(1, invalidUpdate as any)).rejects.toThrow(InvalidParamError);
-    });
-  });
+		test("nenhuma atualização fornecida ==> lança InvalidParamError", async () => {
+			prismaMock.artist.findUnique.mockResolvedValue({ id: 1, name: "Artist Name", photo: "url/to/photo", stream: 1000 });
+			await expect(artistService.update(1, {})).rejects.toThrow(InvalidParamError);
+		});
 
-  describe('delete', () => {
-    test('ID válido fornecido ==> deleta o artista', async () => {
-      const artist = { id: 1, name: 'Artist Name', photo: 'url/to/photo', stream: 1000 };
+		test("dados de atualização inválidos fornecidos ==> lança InvalidParamError", async () => {
+			const invalidUpdate = {
+				name: 12345 as unknown as string, // Nome deve ser string
+				photo: "url-photo",
+				stream: "1000" as unknown as number, // Stream deve ser número
+			};
 
-      prismaMock.artist.findUnique.mockResolvedValue(artist);
-      prismaMock.artist.delete.mockResolvedValue(artist);
+			prismaMock.artist.findUnique.mockResolvedValue({ id: 1, name: "Artist Name", photo: "url/to/photo", stream: 1000 });
 
-      await expect(artistService.delete(1)).resolves.toEqual(artist);
-    });
+			await expect(artistService.update(1, invalidUpdate)).rejects.toThrow(InvalidParamError);
+		});
+	});
 
-    test('ID não fornecido ==> lança InvalidParamError', async () => {
-      await expect(artistService.delete(null as any)).rejects.toThrow(InvalidParamError);
-    });
+	describe("delete", () => {
+		test("ID válido fornecido ==> deleta o artista", async () => {
+			const artist = { id: 1, name: "Artist Name", photo: "url/to/photo", stream: 1000 };
 
-    test('artista não encontrado ==> lança QueryError', async () => {
-      prismaMock.artist.findUnique.mockResolvedValue(null);
+			prismaMock.artist.findUnique.mockResolvedValue(artist);
+			prismaMock.artist.delete.mockResolvedValue(artist);
 
-      await expect(artistService.delete(1)).rejects.toThrow(QueryError);
-    });
-  });
+			await expect(artistService.delete(1)).resolves.toEqual(artist);
+		});
+
+		test("ID não fornecido ==> lança InvalidParamError", async () => {
+			await expect(artistService.delete(null as unknown as number)).rejects.toThrow(InvalidParamError);
+		});
+
+		test("artista não encontrado ==> lança QueryError", async () => {
+			prismaMock.artist.findUnique.mockResolvedValue(null);
+
+			await expect(artistService.delete(1)).rejects.toThrow(QueryError);
+		});
+	});
 });

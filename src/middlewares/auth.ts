@@ -1,13 +1,12 @@
-import prisma from '../../config/client'
-import { User } from '@prisma/client';
-import { Request, Response, NextFunction } from 'express';
-import { PermissionError } from '../../errors/PermissionError';
-import { compare } from 'bcrypt';
-import statusCodes from '../../utils/constants/statusCodes';
-import { JwtPayload, sign, verify } from 'jsonwebtoken';
-import { TokenError } from '../../errors/TokenError';
-import { userRoles } from '../../utils/constants/userRoles';
-import { NotAuthorizedError } from '../../errors/NotAuthorizedError';
+import prisma from "../../config/client";
+import { User } from "@prisma/client";
+import { Request, Response, NextFunction } from "express";
+import { PermissionError } from "../../errors/PermissionError";
+import { compare } from "bcrypt";
+import statusCodes from "../../utils/constants/statusCodes";
+import { JwtPayload, sign, verify } from "jsonwebtoken";
+import { TokenError } from "../../errors/TokenError";
+import { NotAuthorizedError } from "../../errors/NotAuthorizedError";
 
 // Gera um token JWT para um usuário autenticado 
 function generateJWT(user: User, res: Response){
@@ -61,21 +60,21 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction){
 
 //Checa se o usuário ainda não está logado
 export function notLoggedIn(req: Request, res: Response, next: NextFunction){
-    try {
-        //Extrai o token JWT
-        const token = cookieExtractor(req);
-         if (token) {
-            //Verifica se o token é válido
-            const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
-            if (decoded.user) {
-                //verifica se o usuário está logado e, caso esteja, manda um erro de permissão
-                throw new PermissionError("Você já está logado");
-            }
-         }
-         next(); //caso contrário, prossegue para fazer login
-    } catch (error) { 
-        next(error);
-    }
+	try {
+		//Extrai o token JWT
+		const token = cookieExtractor(req);
+		if (token) {
+			//Verifica se o token é válido
+			const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
+			if (decoded.user) {
+				//verifica se o usuário está logado e, caso esteja, manda um erro de permissão
+				throw new PermissionError("Você já está logado");
+			}
+		}
+		next(); //caso contrário, prossegue para fazer login
+	} catch (error) { 
+		next(error);
+	}
 }
 
 // Responsável pelo processo de login do usuário
@@ -116,7 +115,7 @@ export function checkRole(req: Request, res: Response, next: NextFunction, roles
 		const allowed = roles.some(role => req.user.role === role);
         
 		if(!allowed){
-			throw new NotAuthorizedError("Você não é autorizado a realizar essa ação!")
+			throw new NotAuthorizedError("Você não é autorizado a realizar essa ação!");
 		}
 
 		next();
