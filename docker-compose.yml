@@ -34,6 +34,6 @@ services:
 networks:
   app_network:
     driver: bridge
-
+    
 volumes:
   db_data:

@@ -3,8 +3,8 @@
  * ou inválidos.
  */
 export class TokenError extends Error {
-    constructor(msg: string) {
-        super(msg);
-        this.name = 'TokenError';
-    }
+	constructor(msg: string) {
+		super(msg);
+		this.name = "TokenError";
+	}
 }
