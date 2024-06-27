@@ -20,7 +20,11 @@ class MusicService {
 
 	//Retorna todas as músicas
 	async readAll() {
-		const musics = await prisma.music.findMany();
+		const musics = await prisma.music.findMany({
+			orderBy: {
+				name: "asc"
+			}
+		});
 		if (!musics || musics.length === 0) {
 			throw new QueryError("Nenhuma música encontrada");
 		}
@@ -126,7 +130,11 @@ class MusicService {
 		if (!authorId) {
 			throw new InvalidParamError("É necessário informar um ID");
 		}
-		const musics = await prisma.music.findMany({ where: { authorId: authorId } });
+		const musics = await prisma.music.findMany({ where: { authorId: authorId }, 
+			orderBy: {
+				name: "asc"
+			} 
+		});
 		if (!musics.length) {
 			throw new QueryError("Nenhuma música encontrada para esse artista");
 		}
