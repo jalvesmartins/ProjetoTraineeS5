@@ -171,4 +171,29 @@ describe("MusicService", () => {
 			await expect(musicService.userWhoListenedMusic(musicId)).rejects.toThrow(QueryError);
 		});
 	});
+
+	describe("readMusicByArtist", () => {
+		test("ID de artista válido fornecido ==> retorna as músicas do artista", async () => {
+			const authorId = 1;
+			const musics = [
+				{ id: 1, name: "Music One", genre: "Genre One", album: "Album One", authorId: 1 },
+				{ id: 2, name: "Music Two", genre: "Genre Two", album: "Album Two", authorId: 2 },
+			];
+			prismaMock.music.findMany.mockResolvedValue(musics);
+			await expect(musicService.readMusicByArtist(authorId)).resolves.toEqual(musics);
+		});
+		test("ID não fornecido ==> lança InvalidParamError", async () => {
+			await expect(musicService.readMusicByArtist(null as any)).rejects.toThrow(InvalidParamError);
+		});
+		test("nenhuma música encontrada ==> lança QueryError", async () => {
+			const authorId = 1;
+			prismaMock.music.findMany.mockResolvedValue([]);
+			await expect(musicService.readMusicByArtist(authorId)).rejects.toThrow(QueryError);
+		});
+		test("erro no banco de dados ==> lança QueryError", async () => {
+			const authorId = 1;
+			prismaMock.music.findMany.mockRejectedValue(new QueryError("Database connection error"));
+			await expect(musicService.readMusicByArtist(authorId)).rejects.toThrow(QueryError);
+		});
+	});
 });

@@ -111,14 +111,26 @@ class MusicService {
 
 	//Lista quais usuários já escutaram determinada música
 	async userWhoListenedMusic(musicId: number) {
-		if(!musicId){
+		if(!musicId) {
 			throw new InvalidParamError("É necessário informar um ID");
 		}
 		const users = await prisma.user.findMany({ where: { musics: { some: { id: musicId } } } });
 		if (!users.length) {
-			throw new QueryError("No users found for this music");
+			throw new QueryError("Nenhum usuário encontrado para essa música");
 		}
 		return users;
+	}
+
+	//Lista todas as músicas de um determinado artista
+	async readMusicByArtist(authorId: number) {
+		if (!authorId) {
+			throw new InvalidParamError("É necessário informar um ID");
+		}
+		const musics = await prisma.music.findMany({ where: { authorId: authorId } });
+		if (!musics.length) {
+			throw new QueryError("Nenhuma música encontrada para esse artista");
+		}
+		return musics;
 	}
 }
 
