@@ -7,11 +7,6 @@ import statusCodes from "../../../../utils/constants/statusCodes";
 
 const router = Router();
 
-//Rota para realizar o login
-router.post("/login", login);
-
-router.post("/logout", verifyJWT, logout);
-
 //Lista todos os usuários
 router.get("/", verifyJWT, (req: Request, res: Response, next:NextFunction) => {
 		checkRole(req, res, next, ["admin"]);

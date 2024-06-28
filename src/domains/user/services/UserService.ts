@@ -20,8 +20,14 @@ class ServiceUser {
 				email: body.email
 			}
 		});
+		if(body.name === (null || undefined)){
+			throw new InvalidParamError("Informe um nome");
+		}
 		if(checkUser){
 			throw new QueryError("Esse email já esta cadastrado.");
+		}
+		if(body.password == undefined){
+			throw new InvalidParamError("Informe uma senha");
 		}
 		if(body.password.length<6){
 			throw new InvalidParamError("Senha menor que o exigido. Mínimo de 6 dígitos");
