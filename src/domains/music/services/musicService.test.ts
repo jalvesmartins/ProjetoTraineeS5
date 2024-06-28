@@ -21,44 +21,34 @@ describe("MusicService", () => {
 				authorId: 1
 			};
 			prismaMock.music.create.mockResolvedValue(music);
-
 			await expect(musicService.create(music)).resolves.toEqual(music);
 		});
 		test("nome não fornecido ==> lança InvalidParamError", async () => {
 			const music = {
-				id: 1,
 				name: "",
 				genre: "Music Genre",
 				album: "Music Album",
 				authorId: 1
 			};
-			prismaMock.music.create.mockResolvedValue(music);
-
-			await expect(musicService.create(music)).resolves.toEqual(music);
+			await expect(musicService.create(music)).rejects.toThrow(InvalidParamError);
 		});
 		test("gênero não fornecido ==> lança InvalidParamError", async () => {
 			const music = {
-				id: 1,
 				name: "Music Name",
 				genre: "",
 				album: "Music Album",
 				authorId: 1
 			};
-			prismaMock.music.create.mockResolvedValue(music);
-
-			await expect(musicService.create(music)).resolves.toEqual(music);
+			await expect(musicService.create(music)).rejects.toThrow(InvalidParamError);
 		});
 		test("álbum não fornecido ==> lança InvalidParamError", async () => {
 			const music = {
-				id: 1,
 				name: "Music Name",
 				genre: "Music Genre",
 				album: "",
 				authorId: 1
 			};
-			prismaMock.music.create.mockResolvedValue(music);
-
-			await expect(musicService.create(music)).resolves.toEqual(music);
+			await expect(musicService.create(music)).rejects.toThrow(InvalidParamError);
 		});
 	});
 

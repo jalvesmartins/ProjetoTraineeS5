@@ -5,16 +5,28 @@ import { InvalidParamError } from "../../../../errors/InvalidParamError";
 
 class MusicService {
 	//Cria uma nova música
-	async create(body: Music) {
-		const music = await prisma.music.create({
-			data: {
-				id: body.id,
-				name: body.name,
-				genre: body.genre,
-				album: body.album,
-				authorId: body.authorId
-			}
-		});
+	async create(body: { name: string; genre: string; album: string; authorId: number}) {
+		if (!body.name || !body.genre || !body.album || !body.authorId) {
+			throw new InvalidParamError("Nome, gênero, álbum e ID do autor são obrigatórios");
+		}
+		const data: {
+			name: string;
+			genre: string;
+			album: string;
+			authorId: number;
+	} = {
+		name: body.name,
+		genre: body.genre,
+		album: body.album,
+		authorId: body.authorId
+	};
+		
+		const music = await prisma.music.create({ data: data });
+
+		if (!music) {
+			throw new InvalidParamError("Erro ao criar música");
+		}
+
 		return music;
 	}
 
