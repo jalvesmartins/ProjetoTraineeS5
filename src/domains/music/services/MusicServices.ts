@@ -142,6 +142,12 @@ class MusicService {
 		if (!authorId) {
 			throw new InvalidParamError("É necessário informar um ID");
 		}
+		const checkAuthor = await prisma.artist.findUnique({
+			where: { id: authorId }
+		});
+		if (!checkAuthor) {
+			throw new QueryError("Artista não encontrado");
+		}
 		const musics = await prisma.music.findMany({ where: { authorId: authorId }, 
 			orderBy: {
 				name: "asc"

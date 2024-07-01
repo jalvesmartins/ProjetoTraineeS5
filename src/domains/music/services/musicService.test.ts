@@ -165,11 +165,13 @@ describe("MusicService", () => {
 	describe("readMusicByArtist", () => {
 		test("ID de artista válido fornecido ==> retorna as músicas do artista", async () => {
 			const authorId = 1;
+			const artist = { id: authorId, name: "Artist One", photo: null, stream: 0 };
 			const musics = [
 				{ id: 1, name: "Music One", genre: "Genre One", album: "Album One", authorId: 1 },
 				{ id: 2, name: "Music Two", genre: "Genre Two", album: "Album Two", authorId: 2 },
 			];
-			prismaMock.music.findMany.mockResolvedValue(musics);
+			prismaMock.artist.findUnique.mockResolvedValue(artist);
+        	prismaMock.music.findMany.mockResolvedValue(musics);
 			await expect(musicService.readMusicByArtist(authorId)).resolves.toEqual(musics);
 		});
 		test("ID não fornecido ==> lança InvalidParamError", async () => {
@@ -184,6 +186,10 @@ describe("MusicService", () => {
 			const authorId = 1;
 			prismaMock.music.findMany.mockRejectedValue(new QueryError("Database connection error"));
 			await expect(musicService.readMusicByArtist(authorId)).rejects.toThrow(QueryError);
+		});
+		test("artista não encontrado ==> lança QueryError", async () => {
+			prismaMock.music.findUnique.mockResolvedValue(null);
+			await expect(musicService.readMusicByArtist(1)).rejects.toThrow(QueryError);
 		});
 	});
 });

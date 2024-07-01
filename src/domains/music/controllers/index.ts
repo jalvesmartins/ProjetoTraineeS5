@@ -97,12 +97,12 @@ async (req: Request, res: Response, next: NextFunction) => {
 	}
 });
 
-router.get("/:id/", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/:id/musics", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
 	checkRole(req, res, next, ["user","admin"]);
 },
 async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const authorId = Number(req.params.authorId);
+		const authorId = Number(req.params.id);
 		const musicsByArtist = await musicService.readMusicByArtist(authorId);
 		res.status(statusCodes.SUCCESS).json(musicsByArtist);
 	} catch (error) {
